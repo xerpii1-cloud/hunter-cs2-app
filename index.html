@@ -1,126 +1,86 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>CS2 Case</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunter CS2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            background-color: #1b1b1b;
-            color: #fff;
-            font-family: sans-serif;
-            text-align: center;
+            background-color: #1b1b1b; /* Цвет фона CS2 */
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
             padding: 20px;
         }
-        .balance { font-size: 20px; color: #de9b35; margin-bottom: 20px; }
-        .case-container { margin: 30px 0; }
-        .case-img { width: 150px; transition: 0.3s; }
-        
-        .result-box {
-            display: none; /* Скрыто по умолчанию */
-            margin-top: 20px;
-            padding: 15px;
-            background: #2d2d2d;
-            border: 2px solid #de9b35;
-            border-radius: 10px;
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .skin-name { font-size: 18px; font-weight: bold; margin: 10px 0; }
-        
-        .btn {
-            background: #de9b35;
+
+        .balance-card {
+            background: linear-gradient(135deg, #2d2d2d, #383838);
+            padding: 15px;
+            border-radius: 15px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #de9b35; /* Оранжевый CS2 */
+            box-shadow: 0 4px 15px rgba(222, 155, 53, 0.2);
+        }
+
+        .balance-title {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #de9b35;
+        }
+
+        .btn-main {
+            margin-top: 30px;
+            background-color: #de9b35;
+            color: #000;
             border: none;
             padding: 15px 30px;
             font-size: 18px;
+            font-weight: bold;
             border-radius: 10px;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
+            transition: 0.2s;
         }
-        .btn:disabled { background: #555; cursor: not-allowed; }
+
+            .btn-main:active {
+                transform: scale(0.95);
+            }
     </style>
 </head>
 <body>
 
-    <h1>Revolution Case</h1>
-    <div class="balance">Баланс: <span id="balance-display">...</span> GC</div>
-
-    <div class="case-container">
-        <img src="https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQwnfCcJm4XuY_kx9KwlKL2MOrQlzkG7ZMg2r2VrD3wjg/360fx360f" class="case-img" id="case-img">
+    <div class="header">
+        <h1>Hunter CS2</h1>
     </div>
 
-    <div id="result-screen" class="result-box">
-        <div>🎉 Твой выигрыш:</div>
-        <div class="skin-name" id="skin-name">...</div>
-        <button class="btn" onclick="sendResult()">ЗАБРАТЬ В ИНВЕНТАРЬ</button>
+    <div class="balance-card">
+        <div class="balance-title">Твой баланс</div>
+        <div class="balance-amount">0 GC</div>
     </div>
 
-    <button class="btn" id="open-btn" onclick="openCase()">ОТКРЫТЬ (50 GC)</button>
+    <button class="btn-main" onclick="alert('Скоро здесь будут кейсы!')">
+        ОТКРЫТЬ КЕЙС
+    </button>
 
     <script>
+        // Инициализация Telegram Web App
         let tg = window.Telegram.WebApp;
-        tg.expand();
-
-        // 1. Получаем баланс из ссылки
-        const urlParams = new URLSearchParams(window.location.search);
-        let userBalance = parseInt(urlParams.get('balance')) || 0;
-        
-        // Отображаем баланс
-        document.getElementById('balance-display').innerText = userBalance;
-
-        // Список скинов (простая рулетка)
-        const skins = [
-            "M4A4 | Temukau (Legendary)",
-            "AK-47 | Head Shot",
-            "AWP | Duality",
-            "P90 | Neoqueen",
-            "Glock-18 | Umbral Rabbit",
-            "MAC-10 | Sakkaku",
-            "USP-S | Ticket to Hell"
-        ];
-
-        let currentWonSkin = "";
-
-        function openCase() {
-            // Проверка денег
-            if (userBalance < 50) {
-                tg.showAlert("Недостаточно денег! Нужно 50 GC.");
-                return;
-            }
-
-            // Визуальное списание (реальное сделает бот)
-            userBalance -= 50;
-            document.getElementById('balance-display').innerText = userBalance;
-            
-            // Анимация (типа)
-            document.getElementById('open-btn').style.display = 'none'; // Скрыть кнопку
-            document.getElementById('case-img').style.transform = "scale(1.1) rotate(5deg)";
-            
-            setTimeout(() => {
-                // Выбираем случайный скин
-                const randomSkin = skins[Math.floor(Math.random() * skins.length)];
-                currentWonSkin = randomSkin;
-
-                // Показываем результат
-                document.getElementById('case-img').style.transform = "scale(1)";
-                document.getElementById('skin-name').innerText = randomSkin;
-                document.getElementById('result-screen').style.display = 'block';
-                
-                tg.HapticFeedback.notificationOccurred('success'); // Вибрация
-            }, 1000); // Задержка 1 секунда для "интриги"
-        }
-
-        function sendResult() {
-            // Отправляем данные боту
-            // action: 'buy_case' говорит боту, что мы купили кейс
-            // skin: название того, что выпало
-            const data = JSON.stringify({
-                action: 'buy_case',
-                skin: currentWonSkin
-            });
-            
-            tg.sendData(data); // Эта команда закроет окно и перешлет данные в чат
-        }
+        tg.expand(); // Расширяем на весь экран
     </script>
 </body>
 </html>
