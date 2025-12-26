@@ -1,86 +1,97 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hunter CS2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            background-color: #1b1b1b; /* Цвет фона CS2 */
-            color: #ffffff;
-            font-family: Arial, sans-serif;
+            background-color: #1b1b1b;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 20px;
+            user-select: none; /* Запрет выделения текста */
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #2d2d2d, #383838);
-            padding: 15px;
-            border-radius: 15px;
+        .container {
             width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
             text-align: center;
-            border: 2px solid #de9b35; /* Оранжевый CS2 */
-            box-shadow: 0 4px 15px rgba(222, 155, 53, 0.2);
         }
-
-        .balance-title {
-            font-size: 14px;
-            color: #aaa;
+        .card {
+            background: linear-gradient(145deg, #2a2a2a, #333);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid #444;
         }
-
-        .balance-amount {
-            font-size: 32px;
-            font-weight: bold;
-            color: #de9b35;
+        .balance-label { font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 1px;}
+        .balance-value { font-size: 42px; font-weight: 800; color: #de9b35; margin: 10px 0; text-shadow: 0 0 10px rgba(222, 155, 53, 0.3); }
+        
+        .case-img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+            transition: transform 0.1s;
         }
+        .case-img:active { transform: scale(0.95); }
 
-        .btn-main {
-            margin-top: 30px;
-            background-color: #de9b35;
+        .btn {
+            background: #de9b35;
             color: #000;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
+            padding: 15px 0;
             width: 100%;
-            transition: 0.2s;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
         }
-
-            .btn-main:active {
-                transform: scale(0.95);
-            }
+        .footer { margin-top: auto; padding: 20px; color: #555; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Hunter CS2</h1>
+    <div class="container">
+        <div class="card">
+            <div class="balance-label">Твой Баланс</div>
+            <div class="balance-value">??? GC</div>
+            <div style="font-size: 12px; color: #aaa;">Проверяй баланс в чате бота /start</div>
+        </div>
+
+        <div style="margin: 30px 0;">
+            <img src="https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQwnfCcJm4XuY_kx9KwlKL2MOrQlzkG7ZMg2r2VrD3wjg/360fx360f" class="case-img" id="case">
+            <p style="color: #666; margin-top: 10px;">Revolution Case</p>
+        </div>
+
+        <button class="btn" onclick="openCase()">ОТКРЫТЬ (Тест)</button>
     </div>
 
-    <div class="balance-card">
-        <div class="balance-title">Твой баланс</div>
-        <div class="balance-amount">0 GC</div>
-    </div>
-
-    <button class="btn-main" onclick="alert('Скоро здесь будут кейсы!')">
-        ОТКРЫТЬ КЕЙС
-    </button>
+    <div class="footer">Hunter CS2 v1.0</div>
 
     <script>
-        // Инициализация Telegram Web App
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем на весь экран
+        tg.expand();
+
+        // Получаем имя юзера
+        let user = tg.initDataUnsafe.user;
+        
+        // В будущем здесь мы будем делать запрос к боту, чтобы получить реальный баланс
+        // Пока просто визуально
+        
+        function openCase() {
+            // Вибрация телефона (Haptic Feedback)
+            tg.HapticFeedback.impactOccurred('medium');
+            alert("Пока что кейсы в разработке! Но кнопка работает.");
+        }
     </script>
 </body>
 </html>
