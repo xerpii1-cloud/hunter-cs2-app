@@ -4,83 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hunter CS2</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            background-color: #1b1b1b; /* Цвет фона CS2 */
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #2d2d2d, #383838);
-            padding: 15px;
-            border-radius: 15px;
-            width: 100%;
-            text-align: center;
-            border: 2px solid #de9b35; /* Оранжевый CS2 */
-            box-shadow: 0 4px 15px rgba(222, 155, 53, 0.2);
-        }
-
-        .balance-title {
-            font-size: 14px;
-            color: #aaa;
-        }
-
-        .balance-amount {
-            font-size: 32px;
-            font-weight: bold;
-            color: #de9b35;
-        }
-
-        .btn-main {
-            margin-top: 30px;
-            background-color: #de9b35;
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.2s;
-        }
-
-            .btn-main:active {
-                transform: scale(0.95);
-            }
-    </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Hunter CS2</h1>
+    <div class="container">
+        <header class="header">
+            <div class="user-info">
+                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Avatar" class="avatar" id="avatar">
+                <div class="user-details">
+                    <span id="username" class="username">Загрузка...</span>
+                    <span class="status">Рекрут</span>
+                </div>
+            </div>
+            <div class="balance-box">
+                <span class="balance-label">Баланс:</span>
+                <span class="balance-amount" id="balance">0 💰</span>
+            </div>
+        </header>
+
+        <div class="banner">
+            <h2>EARN SKINS</h2>
+            <p>Выполняй задания — получай валюту</p>
+        </div>
+
+        <div class="tasks-list">
+            <h3>Доступные задания</h3>
+
+            <div class="task-card">
+                <div class="task-icon">📅</div>
+                <div class="task-info">
+                    <h4>Ежедневный вход</h4>
+                    <p>+100 монет</p>
+                </div>
+                <button class="btn-claim" onclick="claimDaily()">Забрать</button>
+            </div>
+
+            <div class="task-card">
+                <div class="task-icon">📢</div>
+                <div class="task-info">
+                    <h4>Подписка на канал</h4>
+                    <p>+500 монет</p>
+                </div>
+                <button class="btn-action" onclick="checkSub()">Выполнить</button>
+            </div>
+        </div>
     </div>
 
-    <div class="balance-card">
-        <div class="balance-title">Твой баланс</div>
-        <div class="balance-amount">0 GC</div>
-    </div>
-
-    <button class="btn-main" onclick="alert('Скоро здесь будут кейсы!')">
-        ОТКРЫТЬ КЕЙС
-    </button>
-
-    <script>
-        // Инициализация Telegram Web App
-        let tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем на весь экран
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
