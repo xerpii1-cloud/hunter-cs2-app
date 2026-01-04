@@ -2,7 +2,7 @@
 tg.ready();
 tg.expand();
 
-// ⚠️ ТВОЯ ССЫЛКА (проверь, чтобы была точная)
+// ⚠️ ТВОЯ ССЫЛКА NGROK
 const API_URL = "https://bayleigh-spherelike-sharie.ngrok-free.dev";
 
 document.body.style.backgroundColor = tg.themeParams.bg_color || "#1b1b1b";
@@ -10,24 +10,36 @@ document.body.style.backgroundColor = tg.themeParams.bg_color || "#1b1b1b";
 const usernameEl = document.getElementById('username');
 const balanceEl = document.getElementById('balance');
 
-// Переменная для ID
 let userId = 0;
 
 function init() {
-    // Теперь берем ТОЛЬКО реальные данные из Телеграма
+    // --- ДИАГНОСТИКА ---
+    // Выводим на экран всё, что передал Телеграм
+    // Если тут будет пустые скобки {} - значит телеграм не передал данные
+    try {
+        alert("Данные запуска:\n" + JSON.stringify(tg.initDataUnsafe, null, 2));
+    } catch (e) {
+        alert("Ошибка чтения данных: " + e);
+    }
+    // -------------------
+
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const user = tg.initDataUnsafe.user;
-        usernameEl.innerText = user.first_name; // Твое имя
-        userId = user.id; // Твой ID
+        usernameEl.innerText = user.first_name;
+        userId = user.id;
     } else {
-        // Если открыли не в ТГ
-        usernameEl.innerText = "Зайдите с телефона";
+        // Если данных нет, пишем подробнее
+        usernameEl.innerText = "Нет User ID";
+        // Пробуем аварийный вариант (иногда помогает)
+        if (tg.initData) {
+            alert("Raw Data есть, но объект user не найден!");
+        }
     }
 }
 
 async function claimDaily() {
     if (userId === 0) {
-        alert("Ошибка: Не могу получить ваш ID. Перезапустите бота.");
+        alert("Ошибка: ID равен 0. Данные не загрузились.");
         return;
     }
 
@@ -45,19 +57,16 @@ async function claimDaily() {
         let result = await response.json();
 
         if (result.status === 'ok') {
-            // Обновляем цифру на экране
             balanceEl.innerText = result.new_balance + " 💰";
             btn.innerText = "Взято ✅";
-
-            // Вибрация телефона для кайфа (работает на телефонах)
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         } else {
-            alert("Ошибка: " + JSON.stringify(result));
+            alert("Ошибка сервера: " + JSON.stringify(result));
             btn.disabled = false;
             btn.innerText = "Забрать";
         }
     } catch (error) {
-        alert("Ошибка сети. Бот запущен?");
+        alert("Ошибка сети. Проверь ngrok.");
         btn.disabled = false;
         btn.innerText = "Забрать";
     }
@@ -67,4 +76,5 @@ function checkSub() {
     alert("Скоро...");
 }
 
-init();
+// Запускаем инициализацию с небольшой задержкой (страховка)
+setTimeout(init, 100);
