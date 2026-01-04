@@ -13,7 +13,7 @@ const balanceEl = document.getElementById('balance');
 let userId = 0;
 
 function init() {
-    // Теперь, с новой кнопкой, это должно сработать
+    // С новой кнопкой данные должны приходить корректно
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const user = tg.initDataUnsafe.user;
         usernameEl.innerText = user.first_name;
@@ -24,8 +24,9 @@ function init() {
 }
 
 async function claimDaily() {
+    // Если ID всё еще 0, просим перезайти
     if (userId === 0) {
-        alert("Ошибка доступа. Перезапусти бота через /start");
+        tg.showAlert("Ошибка: Данные не загрузились. Перезапустите бота командой /start");
         return;
     }
 
@@ -45,22 +46,23 @@ async function claimDaily() {
         if (result.status === 'ok') {
             balanceEl.innerText = result.new_balance + " 💰";
             btn.innerText = "Взято ✅";
+            // Вибрация при успехе
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         } else {
-            alert("Ошибка: " + JSON.stringify(result));
+            tg.showAlert("Ошибка сервера: " + JSON.stringify(result));
             btn.disabled = false;
             btn.innerText = "Забрать";
         }
     } catch (error) {
-        alert("Ошибка сети. Сервер не отвечает.");
+        tg.showAlert("Ошибка сети. Проверь, запущен ли ngrok на компьютере.");
         btn.disabled = false;
         btn.innerText = "Забрать";
     }
 }
 
 function checkSub() {
-    alert("Скоро...");
+    tg.showAlert("Эта функция скоро появится!");
 }
 
-// Небольшая задержка, чтобы Телеграм успел подумать
-setTimeout(init, 50);
+// Запускаем
+init();
