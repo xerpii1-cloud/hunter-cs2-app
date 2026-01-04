@@ -13,33 +13,19 @@ const balanceEl = document.getElementById('balance');
 let userId = 0;
 
 function init() {
-    // --- ДИАГНОСТИКА ---
-    // Выводим на экран всё, что передал Телеграм
-    // Если тут будет пустые скобки {} - значит телеграм не передал данные
-    try {
-        alert("Данные запуска:\n" + JSON.stringify(tg.initDataUnsafe, null, 2));
-    } catch (e) {
-        alert("Ошибка чтения данных: " + e);
-    }
-    // -------------------
-
+    // Теперь, с новой кнопкой, это должно сработать
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const user = tg.initDataUnsafe.user;
         usernameEl.innerText = user.first_name;
         userId = user.id;
     } else {
-        // Если данных нет, пишем подробнее
-        usernameEl.innerText = "Нет User ID";
-        // Пробуем аварийный вариант (иногда помогает)
-        if (tg.initData) {
-            alert("Raw Data есть, но объект user не найден!");
-        }
+        usernameEl.innerText = "Играй с телефона";
     }
 }
 
 async function claimDaily() {
     if (userId === 0) {
-        alert("Ошибка: ID равен 0. Данные не загрузились.");
+        alert("Ошибка доступа. Перезапусти бота через /start");
         return;
     }
 
@@ -61,12 +47,12 @@ async function claimDaily() {
             btn.innerText = "Взято ✅";
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         } else {
-            alert("Ошибка сервера: " + JSON.stringify(result));
+            alert("Ошибка: " + JSON.stringify(result));
             btn.disabled = false;
             btn.innerText = "Забрать";
         }
     } catch (error) {
-        alert("Ошибка сети. Проверь ngrok.");
+        alert("Ошибка сети. Сервер не отвечает.");
         btn.disabled = false;
         btn.innerText = "Забрать";
     }
@@ -76,5 +62,5 @@ function checkSub() {
     alert("Скоро...");
 }
 
-// Запускаем инициализацию с небольшой задержкой (страховка)
-setTimeout(init, 100);
+// Небольшая задержка, чтобы Телеграм успел подумать
+setTimeout(init, 50);
