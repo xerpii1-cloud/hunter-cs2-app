@@ -2,38 +2,40 @@
 tg.ready();
 tg.expand();
 
-// --- ВНИМАНИЕ: СЮДА ВСТАВЬ НОВУЮ ССЫЛКУ ОТ NGROK ---
+// ⚠️ ТВОЯ ССЫЛКА (проверь, чтобы была точная)
 const API_URL = "https://bayleigh-spherelike-sharie.ngrok-free.dev";
-// (Убедись, что ссылка точная, без пробелов в конце)
 
 document.body.style.backgroundColor = tg.themeParams.bg_color || "#1b1b1b";
 
 const usernameEl = document.getElementById('username');
 const balanceEl = document.getElementById('balance');
 
-// --- ГРЯЗНЫЙ ХАК: ПРИНУДИТЕЛЬНО СТАВИМ ID ---
-// Мы ставим случайный ID, чтобы кнопка просто заработала
-let userId = 555555;
+// Переменная для ID
+let userId = 0;
 
 function init() {
-    // Пытаемся получить реальное имя, но если нет — ставим "Тестер"
+    // Теперь берем ТОЛЬКО реальные данные из Телеграма
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         const user = tg.initDataUnsafe.user;
-        usernameEl.innerText = user.first_name;
-        userId = user.id; // Если телеграм сработал, берем реальный ID
+        usernameEl.innerText = user.first_name; // Твое имя
+        userId = user.id; // Твой ID
     } else {
-        usernameEl.innerText = "Super Tester";
-        // ID остается 555555, блокировки больше нет
+        // Если открыли не в ТГ
+        usernameEl.innerText = "Зайдите с телефона";
     }
 }
 
 async function claimDaily() {
+    if (userId === 0) {
+        alert("Ошибка: Не могу получить ваш ID. Перезапустите бота.");
+        return;
+    }
+
     const btn = document.querySelector('.btn-claim');
     btn.disabled = true;
-    btn.innerText = "Отправка...";
+    btn.innerText = "⏳...";
 
     try {
-        // Отправляем запрос на сервер
         let response = await fetch(`${API_URL}/api/claim`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -43,23 +45,26 @@ async function claimDaily() {
         let result = await response.json();
 
         if (result.status === 'ok') {
+            // Обновляем цифру на экране
             balanceEl.innerText = result.new_balance + " 💰";
-            alert(`УРА! Сервер ответил.\nБаланс обновлен: ${result.new_balance}`);
-            btn.innerText = "Готово ✅";
+            btn.innerText = "Взято ✅";
+
+            // Вибрация телефона для кайфа (работает на телефонах)
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         } else {
-            alert("Ошибка от сервера: " + JSON.stringify(result));
+            alert("Ошибка: " + JSON.stringify(result));
             btn.disabled = false;
             btn.innerText = "Забрать";
         }
     } catch (error) {
-        alert("ОШИБКА СЕТИ!\nПроверь, работает ли ngrok (черное окно).\n" + error);
+        alert("Ошибка сети. Бот запущен?");
         btn.disabled = false;
         btn.innerText = "Забрать";
     }
 }
 
 function checkSub() {
-    alert("Эта кнопка пока не работает, жми верхнюю!");
+    alert("Скоро...");
 }
 
 init();
