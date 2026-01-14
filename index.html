@@ -4,54 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hunter CS2</title>
-    <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="container">
-        <header class="header">
-            <div class="user-info">
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Avatar" class="avatar" id="avatar">
-                <div class="user-details">
-                    <span id="username" class="username">Загрузка...</span>
-                    <span class="status">Рекрут</span>
-                </div>
+    <div class="app">
+        <header>
+            <div class="user">
+                <div class="avatar">👤</div>
+                <div class="name" id="username">Загрузка...</div>
             </div>
-            <div class="balance-box">
-                <span class="balance-label">Баланс:</span>
-                <span class="balance-amount" id="balance">0 💰</span>
+            <div class="balance">
+                <span id="balance">0</span> 💰
             </div>
         </header>
 
-        <div class="banner">
-            <h2>EARN SKINS</h2>
-            <p>Выполняй задания — получай валюту</p>
-        </div>
-
-        <div class="tasks-list">
-            <h3>Доступные задания</h3>
-
-            <div class="task-card">
-                <div class="task-icon">📅</div>
-                <div class="task-info">
-                    <h4>Ежедневный вход</h4>
-                    <p>+100 монет</p>
-                </div>
-                <button class="btn-claim" onclick="claimDaily()">Забрать</button>
+        <div id="tab-earn" class="tab-content active">
+            <div class="banner">
+                <h2>DAILY REWARD</h2>
+                <div class="streak-box">Стрик: <span id="streak-val">0</span> дн.</div>
             </div>
 
-            <div class="task-card">
-                <div class="task-icon">📢</div>
-                <div class="task-info">
-                    <h4>Подписка на канал</h4>
-                    <p>+500 монет</p>
+            <button class="btn-task" onclick="claimDaily()">📅 Ежедневный бонус</button>
+            <div class="promo-box">
+                <input type="text" id="promo-input" placeholder="Введите промокод...">
+                <button onclick="usePromo()">OK</button>
+            </div>
+            <div class="tasks-list">
+                <h3>Задания</h3>
+                <div class="task">
+                    <span>📢 Подписка на канал (+500)</span>
+                    <button onclick="alert('Скоро!')">Выполнить</button>
                 </div>
-                <button class="btn-action" onclick="checkSub()">Выполнить</button>
             </div>
         </div>
+
+        <div id="tab-case" class="tab-content">
+            <div class="case-container">
+                <img src="https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU2nfGaJG0btN2wwYLSxqktNA2znwoDL-bf8z25J65d2zDkqRdpMGM6I4eLMlh5ow" class="case-img">
+                <h3>CS2 CASE</h3>
+                <p>Цена: 500 💰</p>
+                <button class="btn-open" onclick="openCase()">ОТКРЫТЬ</button>
+            </div>
+            <div id="win-screen" style="display:none">
+                <p>Вам выпало:</p>
+                <img id="win-img" src="" width="100">
+                <h3 id="win-name">...</h3>
+                <span id="win-rarity">...</span>
+            </div>
+        </div>
+
+        <div id="tab-inv" class="tab-content">
+            <h3>Мои скины</h3>
+            <div id="inventory-grid" class="inv-grid">
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button onclick="switchTab('earn')" class="nav-btn">💰 Earn</button>
+            <button onclick="switchTab('case')" class="nav-btn">🔫 Case</button>
+            <button onclick="switchTab('inv')" class="nav-btn">🎒 Bag</button>
+        </nav>
     </div>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=10"></script>
 </body>
 </html>

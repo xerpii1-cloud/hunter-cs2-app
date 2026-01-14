@@ -147,3 +147,102 @@ button {
     background-color: #3d3d3d;
     color: white;
 }
+
+.case-section {
+    background: #222;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid #444;
+    margin-bottom: 20px;
+}
+
+.case-img {
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+.case-price {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.btn-open {
+    background: linear-gradient(45deg, #d4a01c, #ffcc00);
+    color: black;
+    font-size: 16px;
+    padding: 10px 30px;
+    width: 100%;
+}
+
+.drop-result {
+    margin-top: 15px;
+    animation: fadeIn 0.5s;
+    background: #111;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.rarity-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.tab-content {
+    display: none;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #333;
+    display: flex;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 15px;
+    background: none;
+    color: white;
+    border: none;
+    font-size: 16px;
+}
+
+.inv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.inv-item {
+    background: #222;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.inv-name {
+    font-size: 12px;
+    margin: 5px 0;
+    height: 30px;
+}
