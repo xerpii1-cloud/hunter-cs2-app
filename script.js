@@ -69,7 +69,7 @@ async function claimDaily() {
     }
 }
 
-// 🔥 ОТКРЫТИЕ КЕЙСА С АНИМАЦИЕЙ
+// 🔥 ОТКРЫТИЕ КЕЙСА С УЛУЧШЕННОЙ АНИМАЦИЕЙ
 async function openCase() {
     let btn = document.querySelector('.btn-open');
     let winScreen = document.getElementById('win-screen');
@@ -79,18 +79,18 @@ async function openCase() {
     btn.innerText = "ОТКРЫВАЕМ...";
     winScreen.style.display = 'none'; // Скрываем прошлый приз
 
-    // 1. Делаем запрос к серверу (узнаем результат заранее)
+    // 1. Делаем запрос (списываем деньги и узнаем скин)
     let res = await post('/api/open_case', { user_id: userId });
 
     if (res.status === 'ok') {
-        // 2. АНИМАЦИЯ (Трясем кейс)
-        caseImg.style.transform = "scale(1.1) rotate(5deg)";
-        setTimeout(() => caseImg.style.transform = "scale(1.1) rotate(-5deg)", 100);
-        setTimeout(() => caseImg.style.transform = "scale(1.1) rotate(5deg)", 200);
-        setTimeout(() => caseImg.style.transform = "scale(1)", 300);
+        // 2. ЗАПУСКАЕМ АНИМАЦИЮ ТРЯСКИ
+        caseImg.classList.add('case-shaking');
 
-        // Ждем 1 секунду для напряжения...
+        // Ждем 1.5 секунды (тряска)
         setTimeout(() => {
+            // Останавливаем тряску
+            caseImg.classList.remove('case-shaking');
+
             // 3. Показываем результат
             updateUI(res.new_balance);
 
@@ -114,7 +114,7 @@ async function openCase() {
             // Вибрация успеха
             if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-        }, 1000); // <-- Задержка анимации
+        }, 1500); // <-- Длительность анимации
 
     } else if (res.status === 'no_money') {
         tg.showAlert("Не хватает денег! Нужно 500 монет.");
