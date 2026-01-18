@@ -1,33 +1,37 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Hunter CS2</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Telegram WebApp SDK -->
+    <!-- Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <h1>Hunter CS2</h1>
-        <div id="balance">0</div>
-    </header>
+    <div id="app">
 
-    <main id="content">
-        Loading...
-    </main>
+        <header>
+            <h1>Hunter CS2</h1>
+            <div id="balance">Loading...</div>
+        </header>
 
-    <nav>
-        <button onclick="showTab('earn')">💰 Earn</button>
-        <button onclick="showTab('case')">🎁 Case</button>
-        <button onclick="showTab('bag')">🎒 Bag</button>
-    </nav>
+        <main id="content">
+            <!-- динамический контент -->
+        </main>
 
-    <!-- ⚠️ version обязателен для обхода кэша Telegram -->
-    <script src="script.js?v=1737009999"></script>
+        <nav>
+            <button onclick="showEarn()">💰 Earn</button>
+            <button onclick="showCase()">🎁 Case</button>
+            <button onclick="showBag()">🎒 Bag</button>
+        </nav>
+
+    </div>
+
+    <script src="script.js?v=1"></script>
 </body>
 </html>

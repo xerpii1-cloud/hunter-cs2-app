@@ -1,170 +1,91 @@
-﻿const tg = Telegram.WebApp;
+﻿const tg = window.Telegram.WebApp;
 tg.expand();
 
-// ⚠️ ОБЯЗАТЕЛЬНО заменить на свой NGROK / PROD URL
-const API_URL = "https://bayleigh-spherelike-sharie.ngrok-free.dev";
+// ❗ ВАЖНО: ВСТАВЬ СЮДА СВОЙ NGROK
+const API = "https://bayleigh-spherelike-sharie.ngrok-free.dev";
 
-const userId = tg.initDataUnsafe?.user?.id;
+let user_id = null;
 
-const balanceEl = document.getElementById("balance");
-const content = document.getElementById("content");
-
-// ---------------- INIT ----------------
 async function init() {
+    if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+        document.getElementById("content").innerText = "Open via Telegram";
+        return;
+    }
+
+    user_id = tg.initDataUnsafe.user.id;
     await loadUser();
-    showTab("case");
+    showCase();
 }
 
 async function loadUser() {
     try {
-        const r = await fetch(`${API_URL}/api/user?user_id=${userId}`);
-        const d = await r.json();
-        animateBalance(d.balance);
-    } catch (e) {
-        balanceEl.innerText = "Loading...";
-        setTimeout(loadUser, 2000);
+        const r = await fetch(`${API}/api/user?user_id=${user_id}`);
+        const data = await r.json();
+
+        document.getElementById("balance").innerText =
+            `💰 ${data.balance} coins`;
+
+    } catch {
+        document.getElementById("balance").innerText = "Loading...";
+        setTimeout(loadUser, 1500);
     }
 }
 
-function animateBalance(value) {
-    let current = 0;
-    const step = value / 20;
-    const interval = setInterval(() => {
-        current += step;
-        if (current >= value) {
-            current = value;
-            clearInterval(interval);
-        }
-        balanceEl.innerText = Math.floor(current);
-    }, 30);
-}
-
-// ---------------- TABS ----------------
-function showTab(tab) {
-    if (tab === "case") renderCase();
-    if (tab === "earn") renderEarn();
-    if (tab === "bag") loadInventory();
-}
-
-// ---------------- CASE ----------------
-function renderCase() {
-    content.innerHTML = `
-        <div class="case-box">
-            <button class="action" onclick="openCase()">Open Case — 500 coins</button>
-        </div>
+function showCase() {
+    document.getElementById("content").innerHTML = `
+        <h2>🎁 Open Case</h2>
+        <button onclick="openCase()">Open Case — 500 coins</button>
+        <div id="result"></div>
     `;
 }
 
 async function openCase() {
     tg.HapticFeedback.impactOccurred("medium");
 
-    content.innerHTML = `
-        <div class="case-box">
-            <img src="https://i.imgur.com/7yUvePI.png">
-            <p>Opening...</p>
-        </div>
+    const res = await fetch(`${API}/api/open_case`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+        alert(data.error);
+        return;
+    }
+
+    document.getElementById("result").innerHTML = `
+        <p>${data.skin.name}</p>
+        <p>${data.skin.rarity}</p>
     `;
 
-    setTimeout(async () => {
-        try {
-            const r = await fetch(`${API_URL}/api/open_case`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ user_id: userId })
-            });
-
-            const skin = await r.json();
-
-            content.innerHTML = `
-                <h2>${skin.name}</h2>
-                <img src="${skin.image}" width="220">
-                <p>${skin.rarity}</p>
-                <p>Price: ${skin.price}</p>
-            `;
-
-            loadUser();
-        } catch {
-            content.innerHTML = "Error opening case";
-        }
-    }, 2000);
+    loadUser();
 }
 
-// ---------------- EARN ----------------
-function renderEarn() {
-    content.innerHTML = `
-        <button class="action" onclick="daily()">🎁 Daily Bonus</button>
-        <button class="action" onclick="checkSub()">📢 Subscribe Reward</button>
-
-        <hr>
-
-        <h3>💳 Buy Coins</h3>
-        <button class="action" onclick="buy('small')">1 000 coins — ⭐50</button>
-        <button class="action" onclick="buy('medium')">5 000 coins — ⭐200</button>
-        <button class="action" onclick="buy('large')">15 000 coins — ⭐500</button>
+function showEarn() {
+    document.getElementById("content").innerHTML = `
+        <h2>💰 Earn</h2>
+        <button onclick="daily()">Daily reward</button>
     `;
 }
 
 async function daily() {
-    await fetch(`${API_URL}/api/daily`, {
+    const r = await fetch(`${API}/api/daily`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId })
+        body: JSON.stringify({ user_id })
     });
+    const d = await r.json();
+    alert(`+${d.reward} coins`);
     loadUser();
 }
 
-async function checkSub() {
-    await fetch(`${API_URL}/api/check_sub`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId })
-    });
-    loadUser();
+function showBag() {
+    document.getElementById("content").innerHTML = `
+        <h2>🎒 Inventory</h2>
+        <p>(Coming soon)</p>
+    `;
 }
 
-async function buy(pack) {
-    await fetch(`${API_URL}/api/buy`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, pack })
-    });
-}
-
-// ---------------- INVENTORY ----------------
-async function loadInventory() {
-    const r = await fetch(`${API_URL}/api/inventory?user_id=${userId}`);
-    const items = await r.json();
-
-    if (!items.length) {
-        content.innerHTML = "Inventory is empty";
-        return;
-    }
-
-    content.innerHTML = items.map(i => `
-        <div class="item">
-            <img src="${i.image}">
-            <div class="item-info">
-                <b>${i.name}</b><br>
-                ${i.rarity} — ${i.price}
-            </div>
-            <button onclick="sell(${i.id}, ${i.price})">Sell</button>
-        </div>
-    `).join("");
-}
-
-async function sell(id, price) {
-    await fetch(`${API_URL}/api/sell`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            id,
-            price,
-            user_id: userId
-        })
-    });
-    loadUser();
-    loadInventory();
-}
-
-// ---------------- START ----------------
 init();

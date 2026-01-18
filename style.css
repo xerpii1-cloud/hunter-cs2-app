@@ -1,119 +1,61 @@
 ﻿* {
     box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
     background: #0d0d0d;
     color: #fff;
 }
 
-header {
+#app {
+    min-height: 100vh;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: #111;
+    flex-direction: column;
+}
+
+header {
+    padding: 20px;
     border-bottom: 1px solid #222;
 }
 
+    header h1 {
+        margin: 0;
+        font-size: 28px;
+    }
+
 #balance {
     color: gold;
-    font-weight: bold;
-    font-size: 18px;
+    margin-top: 5px;
 }
 
 main {
+    flex: 1;
     padding: 20px;
-    padding-bottom: 90px;
-    min-height: calc(100vh - 120px);
+    text-align: center;
+}
+
+button {
+    background: gold;
+    color: #000;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
 }
 
 nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
     display: flex;
-    background: #111;
     border-top: 1px solid #222;
 }
 
     nav button {
         flex: 1;
-        padding: 15px;
-        background: none;
-        border: none;
-        color: #aaa;
-        font-size: 15px;
+        border-radius: 0;
+        background: #111;
+        color: #fff;
     }
-
-        nav button:hover {
-            color: gold;
-        }
-
-button.action {
-    background: gold;
-    color: #000;
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    margin: 10px 0;
-    border-radius: 6px;
-    width: 100%;
-}
-
-/* ---------- CASE ---------- */
-.case-box {
-    text-align: center;
-    margin-top: 40px;
-}
-
-    .case-box img {
-        width: 200px;
-        animation: shake 0.6s infinite;
-    }
-
-@keyframes shake {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    25% {
-        transform: rotate(2deg);
-    }
-
-    50% {
-        transform: rotate(0deg);
-    }
-
-    75% {
-        transform: rotate(-2deg);
-    }
-}
-
-/* ---------- INVENTORY ---------- */
-.item {
-    display: flex;
-    align-items: center;
-    background: #141414;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 6px;
-}
-
-    .item img {
-        width: 70px;
-        margin-right: 10px;
-    }
-
-.item-info {
-    flex: 1;
-}
-
-.item button {
-    background: #333;
-    color: gold;
-    border: none;
-    padding: 6px 10px;
-}
