@@ -1,72 +1,33 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hunter CS2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app">
-        <header>
-            <div class="user">
-                <div class="avatar">👤</div>
-                <div class="name" id="username">Загрузка...</div>
-            </div>
-            <div class="balance">
-                <span id="balance">0</span> 💰
-            </div>
-        </header>
 
-        <div id="tab-earn" class="tab-content active">
-            <div class="banner">
-                <h2>DAILY REWARD</h2>
-                <div class="streak-box">Стрик: <span id="streak-val">0</span> дн.</div>
-            </div>
+    <header>
+        <h1>Hunter CS2</h1>
+        <div id="balance">0</div>
+    </header>
 
-            <button class="btn-task" onclick="claimDaily()">📅 Ежедневный бонус</button>
-            <div class="promo-box">
-                <input type="text" id="promo-input" placeholder="Введите промокод...">
-                <button onclick="usePromo()">OK</button>
-            </div>
-            <div class="tasks-list">
-                <h3>Задания</h3>
-                <div class="task">
-                    <span>📢 Подписка на канал (+500)</span>
-                    <button onclick="alert('Скоро!')">Выполнить</button>
-                </div>
-            </div>
-        </div>
+    <main id="content">
+        Loading...
+    </main>
 
-        <div id="tab-case" class="tab-content">
-            <div class="case-container">
-                <img src="https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU2nfGaJG0btN2wwYLSxqktNA2znwoDL-bf8z25J65d2zDkqRdpMGM6I4eLMlh5ow" class="case-img">
-                <h3>CS2 CASE</h3>
-                <p>Цена: 500 💰</p>
-                <button class="btn-open" onclick="openCase()">ОТКРЫТЬ</button>
-            </div>
-            <div id="win-screen" style="display:none">
-                <p>Вам выпало:</p>
-                <img id="win-img" src="" width="100">
-                <h3 id="win-name">...</h3>
-                <span id="win-rarity">...</span>
-            </div>
-        </div>
+    <nav>
+        <button onclick="showTab('earn')">💰 Earn</button>
+        <button onclick="showTab('case')">🎁 Case</button>
+        <button onclick="showTab('bag')">🎒 Bag</button>
+    </nav>
 
-        <div id="tab-inv" class="tab-content">
-            <h3>Мои скины</h3>
-            <div id="inventory-grid" class="inv-grid">
-            </div>
-        </div>
-
-        <nav class="bottom-nav">
-            <button onclick="switchTab('earn')" class="nav-btn">💰 Earn</button>
-            <button onclick="switchTab('case')" class="nav-btn">🔫 Case</button>
-            <button onclick="switchTab('inv')" class="nav-btn">🎒 Bag</button>
-        </nav>
-    </div>
-
-    <script src="script.js?v=16"></script>
+    <!-- ⚠️ version обязателен для обхода кэша Telegram -->
+    <script src="script.js?v=1737009999"></script>
 </body>
 </html>
