@@ -115,7 +115,7 @@ function createCard(item) {
     div.className = `roulette-card card-${item.rarity}`;
     // Важно: путь к картинке должен быть корректным относительно index.html
     // В API мы возвращаем 'skins/name.png', а в HTML нам нужно '../assets/skins/name.png'
-    div.innerHTML = `<img src="../assets/${item.img}" alt="skin">`;
+    div.innerHTML = `<img src="assets/${item.img}" alt="skin">`;
     return div;
 }
 
