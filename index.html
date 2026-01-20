@@ -1,70 +1,218 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hunter CS2</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Hunter CS2: Ultimate</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <header>
+    <div class="container">
+        <!-- Заголовок и баланс -->
+        <header class="header">
             <div class="user-info">
-                <span id="username">Loading...</span>
-                <span id="vip-badge" class="hidden">VIP</span>
+                <div class="user-avatar" id="userAvatar">H</div>
+                <div class="user-details">
+                    <h1 class="username" id="username">Hunter</h1>
+                    <div class="user-stats">
+                        <span class="balance" id="balance">1000</span> монет
+                        <span class="level" id="level">Ур. 1</span>
+                        <span class="vip-badge" id="vipBadge">VIP</span>
+                    </div>
+                </div>
             </div>
-            <div class="balance">
-                <span id="balance">0</span> 💰
+            <div class="xp-bar-container">
+                <div class="xp-bar" id="xpBar">
+                    <div class="xp-progress" id="xpProgress"></div>
+                </div>
+                <div class="xp-text" id="xpText">0/100 XP</div>
             </div>
         </header>
 
-        <main id="main-content">
-            <section id="section-case" class="active-section">
-                <div class="case-container">
-                    <img src="https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFQwnfCcJm0Zu9m7xYbbw6P1arqCwz8Jup0p3uvH9Iqk0QPt_RVsY2rwI46WcVc3M1CD_1O_w-nshsW7v8zJz3R9-n51Yw1G2A0" alt="Case" class="case-image" id="case-img">
+        <!-- Основной контент -->
+        <main class="main-content" id="mainContent">
+            <!-- Earn Screen -->
+            <section class="screen earn-screen active" id="earnScreen">
+                <h2>🎯 Заработать монеты</h2>
+                <div class="quests-grid">
+                    <div class="quest-card" data-quest="daily">
+                        <h3>Ежедневный бонус</h3>
+                        <p>Получите награду за ежедневный вход</p>
+                        <div class="quest-reward">+100 монет</div>
+                        <button class="btn btn-primary" onclick="claimDaily()">Забрать</button>
+                    </div>
+                    <div class="quest-card" data-quest="cases">
+                        <h3>Открыть 5 кейсов</h3>
+                        <p>Прогресс: <span id="casesProgress">0/5</span></p>
+                        <div class="quest-reward">+500 монет</div>
+                        <button class="btn btn-secondary" disabled>В процессе</button>
+                    </div>
+                    <div class="quest-card" data-quest="invite">
+                        <h3>Пригласите друзей</h3>
+                        <p>Приглашено: <span id="inviteCount">0</span></p>
+                        <div class="quest-reward">+1000 монет</div>
+                        <button class="btn btn-primary" onclick="showInviteDialog()">Пригласить</button>
+                    </div>
                 </div>
+            </section>
 
-                <div class="roulette-window" id="roulette-window">
-                    <div class="roulette-line"></div>
-                    <div class="items-track" id="items-track">
+            <!-- Shop Screen -->
+            <section class="screen shop-screen" id="shopScreen">
+                <h2>🛒 Магазин</h2>
+                <div class="currency-packs">
+                    <div class="pack-card" data-pack="starter">
+                        <h3>Стартовый пакет</h3>
+                        <div class="pack-price">
+                            <span class="stars">99</span> ★
+                        </div>
+                        <div class="pack-coins">5,000 монет</div>
+                        <button class="btn btn-primary" onclick="buyCurrency('starter')">Купить</button>
+                    </div>
+                    <div class="pack-card" data-pack="medium">
+                        <h3>Средний пакет</h3>
+                        <div class="pack-price">
+                            <span class="stars">299</span> ★
+                        </div>
+                        <div class="pack-coins">20,000 монет</div>
+                        <button class="btn btn-primary" onclick="buyCurrency('medium')">Купить</button>
+                    </div>
+                    <div class="pack-card" data-pack="premium">
+                        <h3>Премиум пакет</h3>
+                        <div class="pack-price">
+                            <span class="stars">999</span> ★
+                        </div>
+                        <div class="pack-coins">100,000 монет</div>
+                        <button class="btn btn-primary" onclick="buyCurrency('premium')">Купить</button>
                     </div>
                 </div>
 
-                <button class="btn-primary" id="open-btn">OPEN CASE (500💰)</button>
-            </section>
-
-            <section id="section-bag" class="hidden-section">
-                <h2>Inventory</h2>
-                <div class="inventory-grid" id="inventory-grid"></div>
-            </section>
-
-            <section id="section-shop" class="hidden-section">
-                <h2>Shop</h2>
-                <div class="shop-item">
-                    <span>1000 Coins</span>
-                    <button class="btn-buy" onclick="buyItem('coins')">Buy (100 ⭐)</button>
+                <div class="crypto-section">
+                    <h3>Криптоплатежи (USDT)</h3>
+                    <div class="crypto-options">
+                        <button class="btn btn-crypto" onclick="createCryptoInvoice(10)">10 USDT</button>
+                        <button class="btn btn-crypto" onclick="createCryptoInvoice(50)">50 USDT</button>
+                        <button class="btn btn-crypto" onclick="createCryptoInvoice(100)">100 USDT</button>
+                    </div>
+                    <div class="crypto-info" id="cryptoInfo"></div>
                 </div>
-                <div class="shop-item">
-                    <span>VIP Status</span>
-                    <button class="btn-buy" onclick="buyItem('vip')">Buy (250 ⭐)</button>
+            </section>
+
+            <!-- Case Screen -->
+            <section class="screen case-screen" id="caseScreen">
+                <h2>🎁 Открытие кейсов</h2>
+                <div class="cases-grid">
+                    <div class="case-card" data-case="basic_case">
+                        <div class="case-image basic-case"></div>
+                        <h3>Базовый кейс</h3>
+                        <div class="case-price">500 монет</div>
+                        <button class="btn btn-open" onclick="openCase('basic_case')">Открыть</button>
+                    </div>
+                    <div class="case-card" data-case="premium_case">
+                        <div class="case-image premium-case"></div>
+                        <h3>Премиум кейс</h3>
+                        <div class="case-price">2,000 монет</div>
+                        <div class="limited-timer" id="premiumTimer">48:00:00</div>
+                        <button class="btn btn-open" onclick="openCase('premium_case')">Открыть</button>
+                    </div>
+                </div>
+
+                <!-- Анимация открытия кейса -->
+                <div class="case-opening" id="caseOpening">
+                    <div class="case-shake" id="caseShake">
+                        <div class="case-lid"></div>
+                        <div class="case-body"></div>
+                    </div>
+                    <div class="spin-line" id="spinLine">
+                        <!-- Скины будут добавляться динамически -->
+                    </div>
+                    <div class="result" id="caseResult">
+                        <div class="result-skin" id="resultSkin">
+                            <div class="skin-image"></div>
+                            <div class="skin-details">
+                                <h3 class="skin-name"></h3>
+                                <div class="skin-rarity"></div>
+                                <div class="skin-price"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inventory Screen -->
+            <section class="screen inventory-screen" id="inventoryScreen">
+                <h2>🎒 Инвентарь</h2>
+                <div class="inventory-filters">
+                    <button class="filter-btn active" data-rarity="all">Все</button>
+                    <button class="filter-btn" data-rarity="common">Обычные</button>
+                    <button class="filter-btn" data-rarity="rare">Редкие</button>
+                    <button class="filter-btn" data-rarity="legendary">Легендарные</button>
+                </div>
+                <div class="inventory-grid" id="inventoryGrid">
+                    <!-- Предметы будут добавляться динамически -->
+                </div>
+                <div class="pagination" id="pagination">
+                    <button class="page-btn" onclick="prevPage()">←</button>
+                    <span class="page-info">Страница 1</span>
+                    <button class="page-btn" onclick="nextPage()">→</button>
+                </div>
+            </section>
+
+            <!-- Top Screen -->
+            <section class="screen top-screen" id="topScreen">
+                <h2>🏆 Лидерборд</h2>
+                <div class="top-filters">
+                    <button class="top-filter active" data-type="balance">По балансу</button>
+                    <button class="top-filter" data-type="level">По уровню</button>
+                    <button class="top-filter" data-type="cases">По кейсам</button>
+                    <button class="top-filter" data-type="spent">По донатам</button>
+                </div>
+                <div class="top-list" id="topList">
+                    <!-- Топ игроков будет добавляться динамически -->
                 </div>
             </section>
         </main>
 
+        <!-- Навигация -->
         <nav class="bottom-nav">
-            <button class="nav-btn active" data-target="section-case">🔫 Case</button>
-            <button class="nav-btn" data-target="section-bag">🎒 Bag</button>
-            <button class="nav-btn" data-target="section-shop">🛒 Shop</button>
+            <button class="nav-btn active" data-screen="earn" onclick="showScreen('earn')">
+                <span class="nav-icon">💰</span>
+                <span class="nav-text">Заработать</span>
+            </button>
+            <button class="nav-btn" data-screen="shop" onclick="showScreen('shop')">
+                <span class="nav-icon">🛒</span>
+                <span class="nav-text">Магазин</span>
+            </button>
+            <button class="nav-btn" data-screen="case" onclick="showScreen('case')">
+                <span class="nav-icon">🎁</span>
+                <span class="nav-text">Кейсы</span>
+            </button>
+            <button class="nav-btn" data-screen="inventory" onclick="showScreen('inventory')">
+                <span class="nav-icon">🎒</span>
+                <span class="nav-text">Инвентарь</span>
+            </button>
+            <button class="nav-btn" data-screen="top" onclick="showScreen('top')">
+                <span class="nav-icon">🏆</span>
+                <span class="nav-text">Топ</span>
+            </button>
         </nav>
-    </div>
 
-    <div id="drop-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 id="drop-title">YOU GOT!</h2>
-            <img id="drop-img" src="" alt="">
-            <p id="drop-name"></p>
-            <button class="btn-primary" onclick="closeModal()">COLLECT</button>
+        <!-- Уведомления -->
+        <div class="notifications" id="notifications"></div>
+
+        <!-- Модальные окна -->
+        <div class="modal" id="sellModal">
+            <div class="modal-content">
+                <h3>Продать предмет</h3>
+                <p id="sellItemName"></p>
+                <div class="sell-price">
+                    Вы получите: <span id="sellPrice">0</span> монет
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+                    <button class="btn btn-primary" onclick="confirmSell()">Продать</button>
+                </div>
+            </div>
         </div>
     </div>
 
