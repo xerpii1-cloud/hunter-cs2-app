@@ -1,92 +1,59 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Hunter Ultimate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hunter CS2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <div class="profile-info">
-                <div class="avatar" id="avatar">👤</div>
-                <div class="stats">
-                    <div class="username" id="username">Loading...</div>
-                    <div class="level-bar-bg"><div class="level-bar-fill" id="xp-bar"></div></div>
-                    <span class="level-badge" id="lvl-badge">Lvl 1</span>
+
+    <header class="user-panel">
+        <div class="user-info">
+            <img id="user-avatar" src="../assets/ui/default_avatar.png" alt="Avatar">
+            <div class="stats">
+                <h3 id="username">Loading...</h3>
+                <div class="level-bar">
+                    <div id="xp-fill" style="width: 0%"></div>
+                    <span id="level-text">Lvl 1</span>
                 </div>
             </div>
-            <div class="currency">
-                <span id="balance">0</span> 💰
+        </div>
+        <div class="balance-box">
+            <img src="../assets/ui/coin.png" class="icon-sm">
+            <span id="balance">0</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="case-display">
+            <img src="../assets/cases/default.png" class="case-img" id="current-case-img">
+            <h2>Daily Case</h2>
+        </div>
+
+        <div class="roulette-wrapper" id="roulette-wrapper" style="display: none;">
+            <div class="center-marker"></div> <div class="roulette-track" id="roulette-track">
             </div>
-        </header>
+        </div>
 
-        <main>
-            <section id="tab-earn" class="tab-content active">
-                <div class="quest-card">
-                    <h3>📢 Subscribe & Earn</h3>
-                    <p>Get +500 Coins</p>
-                    <button class="btn-action" onclick="checkSub()">Check</button>
-                </div>
-                <div class="quest-card">
-                    <h3>🤝 Invite Friend</h3>
-                    <p>Get +200 Coins</p>
-                    <button class="btn-action" onclick="inviteFriend()">Invite</button>
-                </div>
-            </section>
+        <div class="controls">
+            <button id="btn-open" class="btn-primary">
+                ОТКРЫТЬ ЗА 500 <img src="../assets/ui/coin.png" class="icon-xs">
+            </button>
+        </div>
+    </main>
 
-            <section id="tab-shop" class="tab-content">
-                <h2>Store</h2>
-                <div class="shop-item vip-item">
-                    <h3>👑 VIP Status</h3>
-                    <p>x2 XP, Gold Name, Luck</p>
-                    <button class="btn-buy" onclick="buyItem('vip')">Buy for 250 ⭐</button>
-                </div>
-                <div class="shop-item">
-                    <h3>💰 1000 Coins</h3>
-                    <button class="btn-buy" onclick="buyItem('coins_1000')">Buy for 50 ⭐</button>
-                </div>
-            </section>
-
-            <section id="tab-case" class="tab-content">
-                <div class="timer-box">Limited Case: <span id="timer">04:59:59</span></div>
-
-                <div class="case-area">
-                    <div class="case-box" id="case-box">
-                        <img src="https://community.akamai.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU2nfGaJG0btN2wwYLSxqktNA2znwoDL-bf8z25J65d2zDkqRdpMGM6I4eLMlh5ow" class="case-img">
-                    </div>
-                </div>
-
-                <div class="win-display" id="win-display" style="display:none">
-                    <div class="glow-bg" id="win-glow"></div>
-                    <img id="win-img" src="" class="win-skin-img">
-                    <h3 id="win-name">AK-47</h3>
-                    <span id="win-rarity">Rare</span>
-                </div>
-
-                <button class="btn-open" id="btn-open" onclick="openCase()">OPEN CASE (500💰)</button>
-            </section>
-
-            <section id="tab-bag" class="tab-content">
-                <div class="inventory-grid" id="inv-grid"></div>
-            </section>
-
-            <section id="tab-top" class="tab-content">
-                <h2>Top Players</h2>
-                <div class="leaderboard" id="leaderboard"></div>
-            </section>
-        </main>
-
-        <nav class="bottom-nav">
-            <button onclick="switchTab('earn')" class="nav-btn">Earn</button>
-            <button onclick="switchTab('shop')" class="nav-btn">Shop</button>
-            <button onclick="switchTab('case')" class="nav-btn active">Case</button>
-            <button onclick="switchTab('bag')" class="nav-btn">Bag</button>
-            <button onclick="switchTab('top')" class="nav-btn">Top</button>
-        </nav>
+    <div id="modal-drop" class="modal">
+        <div class="modal-content">
+            <h2 class="drop-rarity" id="drop-rarity-title">LEGENDARY</h2>
+            <img id="drop-img" src="" alt="Skin">
+            <p id="drop-name">AK-47 | Redline</p>
+            <p class="drop-price">Цена: <span id="drop-price">0</span></p>
+            <button class="btn-secondary" onclick="closeModal()">ЗАБРАТЬ</button>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

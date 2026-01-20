@@ -1,194 +1,160 @@
-﻿const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
+﻿// web/script.js
+const tg = window.Telegram.WebApp;
+tg.expand(); // Раскрыть на весь экран
 
-// ⚠️ ЗАМЕНИ НА СВОЙ NGROK
-const API_URL = "https://bayleigh-spherelike-sharie.ngrok-free.dev";
+// Получаем ID пользователя из Telegram
+const userId = tg.initDataUnsafe?.user?.id || 123456789; // Заглушка для теста в браузере
 
-let userId = tg.initDataUnsafe?.user?.id || 123456789; // Fallback for testing
-let user = {};
+// Ссылки на API (убедись, что ngrok/domain совпадает с config.py)
+// Т.к. фронт лежит там же где и бэк, можно использовать относительные пути
+const API_URL = 'https://bayleigh-spherelike-sharie.ngrok-free.dev';
 
-// --- INITIALIZATION ---
-async function init() {
+// --- 1. Загрузка данных пользователя ---
+async function loadUser() {
     try {
-        let res = await post('/api/user', { user_id: userId });
-        if (res.error) return console.error(res.error);
+        let response = await fetch(`${API_URL}/get_user`, {
+            method: 'POST',
+            body: JSON.stringify({ user_id: userId })
+        });
+        let data = await response.json();
 
-        user = res;
-        updateUI();
-        startTimer();
-    } catch (e) { console.error("Init failed", e); }
+        if (data.error) {
+            console.error(data.error);
+            return;
+        }
+
+        document.getElementById('balance').innerText = data.balance;
+        document.getElementById('username').innerText = tg.initDataUnsafe?.user?.first_name || "Stalker";
+        document.getElementById('level-text').innerText = `Lvl ${data.level}`;
+    } catch (e) {
+        console.error("Ошибка сети:", e);
+    }
 }
 
-function updateUI() {
-    document.getElementById('username').innerText = user.username;
-    if (user.is_vip) document.getElementById('username').classList.add('vip-name');
+// --- 2. Логика рулетки ---
+const track = document.getElementById('roulette-track');
+const wrapper = document.getElementById('roulette-wrapper');
+const btnOpen = document.getElementById('btn-open');
+const caseImg = document.getElementById('current-case-img');
 
-    document.getElementById('balance').innerText = user.balance;
-    document.getElementById('lvl-badge').innerText = `Lvl ${user.level}`;
+btnOpen.addEventListener('click', async () => {
+    // Блокируем кнопку
+    btnOpen.disabled = true;
 
-    // XP Bar (допустим 1000 на уровень)
-    let percent = (user.xp % 1000) / 10;
-    document.getElementById('xp-bar').style.width = percent + '%';
-}
+    // Запрос к бэкенду
+    let response = await fetch(`${API_URL}/open_case`, {
+        method: 'POST',
+        body: JSON.stringify({ user_id: userId })
+    });
+    let result = await response.json();
 
-// --- CASE OPENING LOGIC ---
-async function openCase() {
-    const btn = document.getElementById('btn-open');
-    const caseImg = document.querySelector('.case-img');
-    const winDisplay = document.getElementById('win-display');
-
-    btn.disabled = true;
-    winDisplay.style.display = 'none';
-
-    // 1. Request
-    let res = await post('/api/open_case', { user_id: userId });
-
-    if (res.status === 'no_money') {
-        tg.showAlert("Not enough money!");
-        btn.disabled = false;
+    if (result.status === 'error') {
+        alert(result.message);
+        btnOpen.disabled = false;
         return;
     }
 
-    // 2. Shake Animation (Haptic)
-    caseImg.classList.add('shaking');
-    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
+    // Если всё ок, начинаем анимацию
+    startRoulette(result.drop, result.new_balance);
+});
 
-    // 3. Wait and Reveal
+function startRoulette(winningItem, newBalance) {
+    // 1. Показываем контейнер рулетки, скрываем статик картинку
+    wrapper.style.display = 'block';
+    caseImg.style.display = 'none';
+
+    // 2. Генерируем "фейковую" ленту предметов
+    // Нам нужно много предметов, чтобы прокрутка была долгой.
+    // Выигрышный предмет ставим, например, на 30-ю позицию.
+    track.innerHTML = ''; // Очистить
+    track.style.transition = 'none'; // Сброс анимации
+    track.style.transform = 'translateX(0px)'; // Сброс позиции
+
+    const cardWidth = 110; // 100px ширина + 10px отступы (margin)
+    const winningIndex = 30; // Индекс победителя
+    const totalCards = 35;
+
+    for (let i = 0; i < totalCards; i++) {
+        let item = (i === winningIndex) ? winningItem : getRandomFiller();
+        let card = createCard(item);
+        track.appendChild(card);
+    }
+
+    // 3. Запускаем анимацию через небольшую паузу (чтобы браузер отрисовал DOM)
     setTimeout(() => {
-        caseImg.classList.remove('shaking');
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        // Вычисляем, на сколько пикселей сдвинуть ленту
+        // Нам нужно, чтобы центр 30-й карточки совпал с центром экрана
+        // centerScreen = wrapper.width / 2
+        // centerCard = winningIndex * cardWidth + (cardWidth / 2)
+        // offset = centerCard - centerScreen
 
-        // Show result
-        winDisplay.style.display = 'block';
-        document.getElementById('win-img').src = res.image;
-        document.getElementById('win-name').innerText = res.skin;
-        document.getElementById('win-rarity').innerText = res.rarity;
+        // Для простоты сдвинем так, чтобы 30-я карточка была примерно по центру
+        // Добавим немного рандома (±20px), чтобы выглядело живым (но всегда останавливалось на карточке)
+        const wrapperWidth = wrapper.offsetWidth;
+        const scrollPosition = (winningIndex * cardWidth) - (wrapperWidth / 2) + (cardWidth / 2);
 
-        // Glow Color
-        let glow = document.getElementById('win-glow');
-        if (res.rarity === 'Covert' || res.rarity === 'Gold') glow.style.background = 'red';
-        else if (res.rarity === 'Classified') glow.style.background = '#d32ce6';
-        else glow.style.background = 'blue';
+        // Включаем плавность (CSS transition)
+        // cubic-bezier(0.1, 0.9, 0.2, 1) - эффект "торможения" в конце
+        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.2, 1)';
+        track.style.transform = `translateX(-${scrollPosition}px)`;
 
-        // Update Balance & XP
-        user.balance = res.new_balance;
-        if (res.leveled_up) tg.showAlert("LEVEL UP! 🎉");
-        updateUI();
+    }, 50);
 
-        btn.disabled = false;
-    }, 1500);
+    // 4. Когда анимация закончится (через 5 сек)
+    setTimeout(() => {
+        showWinModal(winningItem);
+        document.getElementById('balance').innerText = newBalance;
+        btnOpen.disabled = false;
+        // Можно вернуть кейс обратно, скрыв рулетку, или оставить как есть
+    }, 5100);
 }
 
-// --- SHOP & STARS ---
-async function buyItem(type) {
-    let res = await post('/api/create_invoice', { user_id: userId, type: type });
-    if (res.link) {
-        tg.openInvoice(res.link, (status) => {
-            if (status === 'paid') {
-                tg.showAlert("Payment Successful!");
-                init(); // Reload data
-            }
-        });
+// Вспомогательная функция: создать HTML карточки
+function createCard(item) {
+    const div = document.createElement('div');
+    div.className = `roulette-card card-${item.rarity}`;
+    // Важно: путь к картинке должен быть корректным относительно index.html
+    // В API мы возвращаем 'skins/name.png', а в HTML нам нужно '../assets/skins/name.png'
+    div.innerHTML = `<img src="../assets/${item.img}" alt="skin">`;
+    return div;
+}
+
+// Заглушка для фейковых предметов в рулетке
+function getRandomFiller() {
+    // В реале лучше передавать список возможных дропов с бэка
+    const fillers = [
+        { img: 'skins/p250_sand.png', rarity: 'common' },
+        { img: 'skins/m4a4_neo.png', rarity: 'rare' },
+        { img: 'skins/ak47_redline.png', rarity: 'epic' }
+    ];
+    return fillers[Math.floor(Math.random() * fillers.length)];
+}
+
+// --- 3. Модалка выигрыша ---
+function showWinModal(item) {
+    const modal = document.getElementById('modal-drop');
+    document.getElementById('drop-name').innerText = item.name;
+    document.getElementById('drop-rarity-title').innerText = item.rarity.toUpperCase();
+    document.getElementById('drop-img').src = `../assets/${item.img}`;
+    document.getElementById('drop-price').innerText = item.price;
+
+    // Цвет текста редкости
+    const colors = { common: '#b0c3d9', rare: '#4b69ff', epic: '#8847ff', legendary: '#eb4b4b' };
+    document.getElementById('drop-rarity-title').style.color = colors[item.rarity] || '#fff';
+
+    modal.style.display = 'flex';
+
+    // Haptic Feedback (вибрация телефона)
+    if (tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred('success');
     }
 }
 
-// --- INVENTORY ---
-async function loadBag() {
-    let res = await post('/api/inventory', { user_id: userId });
-    let grid = document.getElementById('inv-grid');
-    grid.innerHTML = '';
-
-    res.items.forEach(item => {
-        let el = document.createElement('div');
-        el.className = 'inv-item';
-        el.innerHTML = `
-            <img src="${item.image}">
-            <div class="inv-name" style="color:${getRarityColor(item.rarity)}">${item.name}</div>
-            <button class="btn-sell" onclick="sellItem(${item.id})">Sell ${item.price}💰</button>
-        `;
-        grid.appendChild(el);
-    });
+function closeModal() {
+    document.getElementById('modal-drop').style.display = 'none';
+    wrapper.style.display = 'none';
+    caseImg.style.display = 'block';
 }
 
-async function sellItem(id) {
-    if (!confirm("Sell item?")) return;
-    let res = await post('/api/sell', { user_id: userId, item_id: id });
-    if (res.status === 'ok') {
-        user.balance = res.new_balance;
-        updateUI();
-        loadBag(); // Refresh
-        if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-    }
-}
-
-// --- TOP & QUESTS ---
-async function checkSub() {
-    let res = await post('/api/check_sub', { user_id: userId });
-    if (res.status === 'ok') {
-        tg.showAlert("+500 Coins!");
-        user.balance = res.new_balance;
-        updateUI();
-    } else if (res.status === 'not_sub') {
-        tg.openTelegramLink(res.link);
-    } else {
-        tg.showAlert("Already claimed!");
-    }
-}
-
-async function loadTop() {
-    let res = await post('/api/leaderboard', {});
-    let div = document.getElementById('leaderboard');
-    div.innerHTML = res.top.map((u, i) => `<div class="shop-item">#${i + 1} ${u.name} - ${u.balance}💰</div>`).join('');
-}
-
-// --- UTILS ---
-async function post(url, data) {
-    let req = await fetch(API_URL + url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    return await req.json();
-}
-
-function getRarityColor(rarity) {
-    if (rarity === 'Gold') return '#eb4b4b';
-    if (rarity === 'Covert') return '#eb4b4b';
-    if (rarity === 'Classified') return '#d32ce6';
-    return '#4b69ff';
-}
-
-function switchTab(tab) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.getElementById(`tab-${tab}`).classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-    event.target.classList.add('active');
-
-    if (tab === 'bag') loadBag();
-    if (tab === 'top') loadTop();
-}
-
-function startTimer() {
-    // Fake timer logic
-    let timerEl = document.getElementById('timer');
-    setInterval(() => {
-        let now = new Date();
-        let end = new Date();
-        end.setHours(24, 0, 0, 0);
-        let diff = end - now;
-        let h = Math.floor(diff / 3600000);
-        let m = Math.floor((diff % 3600000) / 60000);
-        let s = Math.floor((diff % 60000) / 1000);
-        timerEl.innerText = `${h}:${m}:${s}`;
-    }, 1000);
-}
-
-// Invite System
-function inviteFriend() {
-    let link = `https://t.me/share/url?url=https://t.me/huntercs2bot?start=${userId}&text=Play Hunter CS2 with me!`;
-    tg.openTelegramLink(link);
-}
-
-// Start
-init();
+// Старт
+loadUser();
