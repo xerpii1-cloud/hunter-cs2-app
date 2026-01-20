@@ -135,7 +135,7 @@ function showWinModal(item) {
     const modal = document.getElementById('modal-drop');
     document.getElementById('drop-name').innerText = item.name;
     document.getElementById('drop-rarity-title').innerText = item.rarity.toUpperCase();
-    document.getElementById('drop-img').src = `/assets/${item.img}`;
+    document.getElementById('drop-img').src = `assets/${item.img}`;
     document.getElementById('drop-price').innerText = item.price;
 
     // Цвет текста редкости
