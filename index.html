@@ -6,7 +6,7 @@
     <title>Hunter CS2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
-    </head>
+</head>
 <body>
 
     <div id="app">
@@ -27,9 +27,10 @@
 
         <div id="tab-home" class="tab-content active">
             <div class="hero-case">
+                <div class="case-glow"></div>
                 <img src="assets/cases/default.png" class="case-img-lg" id="case-img-main">
-                <h2 style="margin: 10px 0 0;">Daily Case</h2>
-                <p style="color: var(--text-sec); font-size: 12px;">Win rate: Rare items 30%</p>
+                <h2 style="margin: 10px 0 0; position:relative; z-index:2;">Daily Case</h2>
+                <p style="color: var(--text-sec); font-size: 12px; position:relative; z-index:2;">Win rate: Rare items 30%</p>
             </div>
 
             <div class="roulette-container" id="roulette-wrapper">
@@ -43,15 +44,38 @@
         </div>
 
         <div id="tab-inventory" class="tab-content">
-            <h2 style="margin-top:0">Мои Скины</h2>
+            <div class="tab-header">
+                <h2>Мои Скины</h2>
+                <span id="inv-total-value" style="color: var(--text-sec); font-size: 12px;">Стоимость: 0 💰</span>
+            </div>
             <div class="inventory-grid" id="inventory-grid">
                 </div>
         </div>
 
         <div id="tab-profile" class="tab-content">
-            <h2>Профиль</h2>
-            <div class="hero-case">
-                <p>Тут будет рефералка и задания</p>
+            <h2 style="margin-top:0">Профиль</h2>
+            
+            <div class="hero-case" style="text-align: left; padding: 20px; margin-bottom: 20px;">
+                <h3 style="margin:0; color:var(--accent)">Пригласи друга</h3>
+                <p style="font-size:12px; color:#888; margin: 5px 0 15px;">Получи 1000 монет за каждого!</p>
+                
+                <div class="ref-box">
+                    <input type="text" id="ref-link" value="Loading..." readonly>
+                    <button class="btn-copy" onclick="copyRef()">COPY</button>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 10px;">Задания</h3>
+            <div class="task-list">
+                <div class="task-card">
+                    <div class="task-icon">📢</div>
+                    <div class="task-info">
+                        <div class="task-title">Подпишись на канал</div>
+                        <div class="task-reward">+500 💰</div>
+                    </div>
+                    <a href="#" id="btn-sub-link" target="_blank" class="btn-task-action">GO</a>
+                    <button class="btn-task-check" onclick="checkSub(this)">CHECK</button>
+                </div>
             </div>
         </div>
     </div>
@@ -74,8 +98,8 @@
     <div id="modal-drop" class="modal-overlay">
         <div class="modal-box">
             <h2 style="color:var(--accent)" id="drop-title">DROPPED!</h2>
-            <img id="drop-img" src="" style="width:80%; margin:20px 0;">
-            <p id="drop-name" style="font-weight:bold; font-size:18px;">Skin Name</p>
+            <img id="drop-img" src="">
+            <p id="drop-name">Skin Name</p>
             <button class="btn-main" onclick="closeModal()">ЗАБРАТЬ</button>
         </div>
     </div>
