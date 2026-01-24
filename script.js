@@ -1,153 +1,143 @@
-﻿// web/script.js
-const tg = window.Telegram.WebApp;
-tg.expand(); // Раскрыть на весь экран
+﻿const tg = window.Telegram.WebApp;
+tg.expand();
 
-// Получаем ID пользователя из Telegram
-const userId = tg.initDataUnsafe?.user?.id || 123456789; // Заглушка для теста в браузере
+// --- НАСТРОЙКИ ---
+// Пока ставим true, чтобы проверить визуал без Python-сервера
+const USE_MOCK_API = true;
+// Сюда потом вставим твой NGROK
+const API_URL = 'https://твоя-ссылка.ngrok-free.app/api';
 
-// Ссылки на API (убедись, что ngrok/domain совпадает с config.py)
-// Т.к. фронт лежит там же где и бэк, можно использовать относительные пути
-const API_URL = 'https://bayleigh-spherelike-sharie.ngrok-free.dev';
+const userId = tg.initDataUnsafe?.user?.id || 123456789;
 
-// --- 1. Загрузка данных пользователя ---
+// --- ДАННЫЕ ДЛЯ ТЕСТА (Заглушки) ---
+const MOCK_INVENTORY = [
+    { name: 'P250 | Sand Dune', rarity: 'common', price: 50, img: 'skins/p250_sand.png' },
+    { name: 'M4A4 | Neo-Noir', rarity: 'rare', price: 400, img: 'skins/m4a4_neo.png' },
+    { name: 'AK-47 | Redline', rarity: 'epic', price: 800, img: 'skins/ak47_redline.png' },
+    { name: 'Glock | Fade', rarity: 'legendary', price: 2000, img: 'skins/glock_fade.png' }
+];
+
+// --- 1. ЗАГРУЗКА ДАННЫХ ---
 async function loadUser() {
+    if (USE_MOCK_API) {
+        // Имитация ответа сервера
+        updateUI(1000, "Tester", 5);
+        return;
+    }
+
     try {
         let response = await fetch(`${API_URL}/get_user`, {
             method: 'POST',
             body: JSON.stringify({ user_id: userId })
         });
         let data = await response.json();
-
-        if (data.error) {
-            console.error(data.error);
-            return;
-        }
-
-        document.getElementById('balance').innerText = data.balance;
-        document.getElementById('username').innerText = tg.initDataUnsafe?.user?.first_name || "Stalker";
-        document.getElementById('level-text').innerText = `Lvl ${data.level}`;
+        updateUI(data.balance, tg.initDataUnsafe?.user?.first_name, data.level);
     } catch (e) {
-        console.error("Ошибка сети:", e);
+        console.error("Ошибка API:", e);
+        document.getElementById('username').innerText = "Offline Mode";
     }
 }
 
-// --- 2. Логика рулетки ---
+function updateUI(balance, name, level) {
+    document.getElementById('balance').innerText = balance;
+    document.getElementById('username').innerText = name || "User";
+    document.getElementById('level-text').innerText = `Lvl ${level}`;
+}
+
+// --- 2. ЛОГИКА РУЛЕТКИ ---
 const track = document.getElementById('roulette-track');
 const wrapper = document.getElementById('roulette-wrapper');
 const btnOpen = document.getElementById('btn-open');
 const caseImg = document.getElementById('current-case-img');
 
 btnOpen.addEventListener('click', async () => {
-    // Блокируем кнопку
     btnOpen.disabled = true;
 
-    // Запрос к бэкенду
-    let response = await fetch(`${API_URL}/open_case`, {
-        method: 'POST',
-        body: JSON.stringify({ user_id: userId })
-    });
-    let result = await response.json();
+    let result;
 
-    if (result.status === 'error') {
-        alert(result.message);
-        btnOpen.disabled = false;
-        return;
+    if (USE_MOCK_API) {
+        // Имитация выпадения предмета (случайный из списка)
+        const randomItem = MOCK_INVENTORY[Math.floor(Math.random() * MOCK_INVENTORY.length)];
+        result = { drop: randomItem, new_balance: 500 }; // Якобы списали 500
+
+        // Маленькая задержка как в реальной жизни
+        await new Promise(r => setTimeout(r, 500));
+    } else {
+        // Тут будет реальный запрос к Python
+        // ... (допишем позже)
     }
 
-    // Если всё ок, начинаем анимацию
     startRoulette(result.drop, result.new_balance);
 });
 
 function startRoulette(winningItem, newBalance) {
-    // 1. Показываем контейнер рулетки, скрываем статик картинку
     wrapper.style.display = 'block';
     caseImg.style.display = 'none';
 
-    // 2. Генерируем "фейковую" ленту предметов
-    // Нам нужно много предметов, чтобы прокрутка была долгой.
-    // Выигрышный предмет ставим, например, на 30-ю позицию.
-    track.innerHTML = ''; // Очистить
-    track.style.transition = 'none'; // Сброс анимации
-    track.style.transform = 'translateX(0px)'; // Сброс позиции
+    track.innerHTML = '';
+    track.style.transition = 'none';
+    track.style.transform = 'translateX(0px)';
 
-    const cardWidth = 110; // 100px ширина + 10px отступы (margin)
-    const winningIndex = 30; // Индекс победителя
+    const cardWidth = 104; // 100px ширина + 4px margin
+    const winningIndex = 30;
     const totalCards = 35;
 
+    // Генерация ленты
     for (let i = 0; i < totalCards; i++) {
         let item = (i === winningIndex) ? winningItem : getRandomFiller();
         let card = createCard(item);
         track.appendChild(card);
     }
 
-    // 3. Запускаем анимацию через небольшую паузу (чтобы браузер отрисовал DOM)
+    // Запуск анимации
     setTimeout(() => {
-        // Вычисляем, на сколько пикселей сдвинуть ленту
-        // Нам нужно, чтобы центр 30-й карточки совпал с центром экрана
-        // centerScreen = wrapper.width / 2
-        // centerCard = winningIndex * cardWidth + (cardWidth / 2)
-        // offset = centerCard - centerScreen
-
-        // Для простоты сдвинем так, чтобы 30-я карточка была примерно по центру
-        // Добавим немного рандома (±20px), чтобы выглядело живым (но всегда останавливалось на карточке)
         const wrapperWidth = wrapper.offsetWidth;
+        // Расчет смещения, чтобы winningIndex встал по центру
         const scrollPosition = (winningIndex * cardWidth) - (wrapperWidth / 2) + (cardWidth / 2);
 
-        // Включаем плавность (CSS transition)
-        // cubic-bezier(0.1, 0.9, 0.2, 1) - эффект "торможения" в конце
-        track.style.transition = 'transform 5s cubic-bezier(0.1, 0.9, 0.2, 1)';
-        track.style.transform = `translateX(-${scrollPosition}px)`;
+        // Рандомизация внутри карточки (чтобы не всегда ровно по центру, а чуть левее/правее)
+        const randomOffset = Math.floor(Math.random() * 40) - 20;
 
+        track.style.transition = 'transform 5s cubic-bezier(0.15, 0.9, 0.3, 1)';
+        track.style.transform = `translateX(-${scrollPosition + randomOffset}px)`;
     }, 50);
 
-    // 4. Когда анимация закончится (через 5 сек)
+    // Финиш
     setTimeout(() => {
         showWinModal(winningItem);
         document.getElementById('balance').innerText = newBalance;
         btnOpen.disabled = false;
-        // Можно вернуть кейс обратно, скрыв рулетку, или оставить как есть
+
+        // Вибрация
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     }, 5100);
 }
 
-// Вспомогательная функция: создать HTML карточки
 function createCard(item) {
     const div = document.createElement('div');
     div.className = `roulette-card card-${item.rarity}`;
-    // Важно: путь к картинке должен быть корректным относительно index.html
-    // В API мы возвращаем 'skins/name.png', а в HTML нам нужно '../assets/skins/name.png'
+    // ВАЖНО: Путь к картинке assets/...
     div.innerHTML = `<img src="assets/${item.img}" alt="skin">`;
     return div;
 }
 
-// Заглушка для фейковых предметов в рулетке
 function getRandomFiller() {
-    // В реале лучше передавать список возможных дропов с бэка
-    const fillers = [
-        { img: 'skins/p250_sand.png', rarity: 'common' },
-        { img: 'skins/m4a4_neo.png', rarity: 'rare' },
-        { img: 'skins/ak47_redline.png', rarity: 'epic' }
-    ];
-    return fillers[Math.floor(Math.random() * fillers.length)];
+    return MOCK_INVENTORY[Math.floor(Math.random() * MOCK_INVENTORY.length)];
 }
 
-// --- 3. Модалка выигрыша ---
+// --- 3. МОДАЛКА ---
 function showWinModal(item) {
     const modal = document.getElementById('modal-drop');
     document.getElementById('drop-name').innerText = item.name;
     document.getElementById('drop-rarity-title').innerText = item.rarity.toUpperCase();
-    document.getElementById('drop-img').src = `/assets/${item.img}`;
+    // ВАЖНО: Путь к картинке assets/...
+    document.getElementById('drop-img').src = `assets/${item.img}`;
     document.getElementById('drop-price').innerText = item.price;
 
-    // Цвет текста редкости
     const colors = { common: '#b0c3d9', rare: '#4b69ff', epic: '#8847ff', legendary: '#eb4b4b' };
-    document.getElementById('drop-rarity-title').style.color = colors[item.rarity] || '#fff';
+    document.getElementById('drop-rarity-title').style.color = colors[item.rarity];
 
     modal.style.display = 'flex';
-
-    // Haptic Feedback (вибрация телефона)
-    if (tg.HapticFeedback) {
-        tg.HapticFeedback.notificationOccurred('success');
-    }
 }
 
 function closeModal() {

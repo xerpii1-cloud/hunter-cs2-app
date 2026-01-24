@@ -11,7 +11,7 @@
 
     <header class="user-panel">
         <div class="user-info">
-            <img id="user-avatar" src="../assets/ui/default_avatar.png" alt="Avatar">
+            <img id="user-avatar" src="assets/ui/default_avatar.png" alt="Avatar">
             <div class="stats">
                 <h3 id="username">Loading...</h3>
                 <div class="level-bar">
@@ -21,34 +21,35 @@
             </div>
         </div>
         <div class="balance-box">
-            <img src="/assets/ui/coin.png" class="icon-sm">
+            <img src="assets/ui/coin.png" class="icon-sm">
             <span id="balance">0</span>
         </div>
     </header>
 
     <main>
         <div class="case-display">
-            <img src="../assets/cases/default.png" class="case-img" id="current-case-img">
+            <img src="assets/cases/default.png" class="case-img" id="current-case-img">
             <h2>Daily Case</h2>
         </div>
 
         <div class="roulette-wrapper" id="roulette-wrapper" style="display: none;">
-            <div class="center-marker"></div> <div class="roulette-track" id="roulette-track">
+            <div class="center-marker"></div>
+            <div class="roulette-track" id="roulette-track">
             </div>
         </div>
 
         <div class="controls">
             <button id="btn-open" class="btn-primary">
-                ОТКРЫТЬ ЗА 500 <img src="../assets/ui/coin.png" class="icon-xs">
+                ОТКРЫТЬ ЗА 500 <img src="assets/ui/coin.png" class="icon-xs">
             </button>
         </div>
     </main>
 
     <div id="modal-drop" class="modal">
         <div class="modal-content">
-            <h2 class="drop-rarity" id="drop-rarity-title">LEGENDARY</h2>
+            <h2 class="drop-rarity" id="drop-rarity-title">DROPPED!</h2>
             <img id="drop-img" src="" alt="Skin">
-            <p id="drop-name">AK-47 | Redline</p>
+            <p id="drop-name">Item Name</p>
             <p class="drop-price">Цена: <span id="drop-price">0</span></p>
             <button class="btn-secondary" onclick="closeModal()">ЗАБРАТЬ</button>
         </div>
