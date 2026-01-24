@@ -274,6 +274,66 @@ async function sellItem(itemId, btnElement) {
     }
 }
 
+// --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ---
+function switchTab(tabName, btn) {
+    // 1. Скрываем все вкладки
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    
+    // 2. Убираем подсветку кнопок
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    
+    // 3. Показываем нужную
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+    btn.classList.add('active');
+
+    // Если открыли инвентарь - загружаем его
+    if (tabName === 'inventory') {
+        loadInventory();
+    }
+}
+
+// Переписываем функцию загрузки инвентаря (она была привязана к модалке, теперь к вкладке)
+async function loadInventory() {
+    const grid = document.getElementById('inventory-grid');
+    grid.innerHTML = '<p style="color:#666;">Loading...</p>';
+    
+    try {
+        let response = await fetch(`${API_URL}/get_inventory`, {
+            method: 'POST', body: JSON.stringify({ user_id: userId })
+        });
+        let data = await response.json();
+        renderInventory(data.items);
+    } catch (e) {
+        grid.innerHTML = 'Error';
+    }
+}
+
+// Обновленный рендер карточек (для нового дизайна)
+function renderInventory(items) {
+    const grid = document.getElementById('inventory-grid');
+    grid.innerHTML = '';
+    
+    if (items.length === 0) {
+        grid.innerHTML = '<p>Пусто :(</p>';
+        return;
+    }
+
+    items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'inv-card';
+        // Сокращаем имя
+        let shortName = item.name.split('|')[0];
+        
+        div.innerHTML = `
+            <img src="assets/${item.img}">
+            <div style="font-size:10px; margin-top:5px;">${shortName}</div>
+            <div class="inv-price">${item.price} 💰</div>
+            <button class="btn-sell-sm" onclick="sellItem(${item.id}, this)">SELL</button>
+        `;
+        grid.appendChild(div);
+    });
+}
+
 function closeInventory() {
     modalInv.style.display = 'none';
 }

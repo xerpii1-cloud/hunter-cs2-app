@@ -1,315 +1,219 @@
 ﻿:root {
-    --bg-color: #1b1b1b;
-    --card-bg: #252525;
-    --accent: #d4af37;
-    --text: #ffffff;
-    --common: #b0c3d9;
-    --rare: #4b69ff;
-    --epic: #8847ff;
-    --legendary: #eb4b4b;
+    --bg-dark: #0f1216; /* Глубокий темный фон */
+    --card-bg: #1a1e26; /* Фон карточек */
+    --accent: #00ff88;  /* Неоновый зеленый (как на скрине) */
+    --accent-glow: rgba(0, 255, 136, 0.3);
+    --text-main: #ffffff;
+    --text-sec: #8b9bb4;
+    --nav-bg: rgba(22, 27, 34, 0.9); /* Полупрозрачное меню */
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, sans-serif; /* Современный шрифт */
     margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
+    padding: 0;
     height: 100vh;
-    box-sizing: border-box;
-    overflow: hidden; /* Чтобы не скроллилось при анимации */
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* UI Elements */
-.user-panel {
+/* ОСНОВНОЙ КОНТЕЙНЕР (Скроллится, но меню на месте) */
+#app {
+    height: calc(100vh - 70px); /* Вычитаем высоту меню */
+    overflow-y: auto;
+    padding: 20px;
+    padding-bottom: 80px;
+    box-sizing: border-box;
+}
+
+/* --- ШАПКА --- */
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--card-bg);
-    padding: 10px;
+    margin-bottom: 30px;
+}
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.avatar {
+    width: 48px; height: 48px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.user-info {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-#user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    background: #333;
     object-fit: cover;
+    border: 2px solid var(--card-bg);
 }
+.user-details h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.level-tag { font-size: 12px; color: var(--accent); font-weight: 600; }
 
-.balance-box {
-    font-weight: bold;
+.balance-card {
+    background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0));
+    border: 1px solid var(--accent);
+    padding: 8px 16px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    gap: 5px;
-    color: var(--accent);
+    gap: 8px;
+    box-shadow: 0 0 15px var(--accent-glow);
 }
-
-.icon-sm {
-    width: 16px;
-    height: 16px;
-}
-
-.icon-xs {
-    width: 14px;
-    height: 14px;
-    vertical-align: middle;
-}
-
-/* Case & Roulette */
-.case-display {
-    text-align: center;
-    margin-top: 20px;
-    transition: opacity 0.3s;
-}
-
-.case-img {
-    width: 150px;
-    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));
-}
-
-.roulette-wrapper {
-    position: relative;
-    width: 100%;
-    height: 120px;
-    background: #101010;
-    margin: 20px 0;
-    overflow: hidden;
-    border-top: 2px solid #333;
-    border-bottom: 2px solid #333;
-    border-radius: 4px;
-}
-
-.center-marker {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: #d4af37;
-    z-index: 10;
-    transform: translateX(-50%);
-    box-shadow: 0 0 10px #d4af37;
-}
-
-.roulette-track {
-    display: flex;
-    height: 100%;
-    align-items: center;
-    transform: translateX(0px);
-    will-change: transform; /* Оптимизация анимации */
-}
-
-.roulette-card {
-    min-width: 100px;
-    height: 90px;
-    margin: 0 2px;
-    background: #2a2a2a;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 3px solid transparent;
-}
-
-    .roulette-card img {
-        width: 70px;
-        height: auto;
-    }
-
-.card-common {
-    border-color: var(--common);
-}
-
-.card-rare {
-    border-color: var(--rare);
-}
-
-.card-epic {
-    border-color: var(--epic);
-}
-
-.card-legendary {
-    border-color: var(--legendary);
-}
-
-/* Buttons */
-.btn-primary {
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(90deg, #ff9900, #ffb84d);
-    border: none;
-    border-radius: 10px;
-    color: #000;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-    .btn-primary:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-.btn-secondary {
-    padding: 10px 20px;
+.btn-plus {
     background: var(--accent);
     border: none;
-    border-radius: 5px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    color: #000;
     font-weight: bold;
+    display: flex; justify-content: center; align-items: center;
     cursor: pointer;
-    margin-top: 10px;
 }
 
-/* --- НОВЫЙ БЛОК МОДАЛКИ --- */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85); /* Чуть прозрачнее */
-    z-index: 1000; /* Поверх всего */
-    align-items: center;
-    justify-content: center;
-    padding: 20px; /* Отступы от краев экрана */
-    box-sizing: border-box;
-}
-
-.modal-content {
+/* --- ГЛАВНЫЙ БАННЕР (Кейс) --- */
+.hero-case {
     background: var(--card-bg);
-    padding: 25px 15px; /* Побольше воздуха внутри */
     border-radius: 20px;
+    padding: 30px;
     text-align: center;
-    width: 100%; /* Занимаем всю доступную ширину */
-    max-width: 350px; /* НО не шире 350px (чтобы на ПК было аккуратно) */
-    border: 1px solid var(--accent);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Эффект пружины */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: relative;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    overflow: hidden;
 }
-
-/* ГЛАВНОЕ ИСПРАВЛЕНИЕ: Картинка дропа */
-#drop-img {
-    width: auto;
-    height: auto;
-    max-width: 80%; /* Не шире 80% модалки */
-    max-height: 180px; /* Не выше 180px, чтобы влезло на любой телефон */
-    object-fit: contain; /* Сохранять пропорции */
-    margin: 15px 0;
-    filter: drop-shadow(0 0 15px rgba(255,255,255,0.1)); /* Легкое свечение */
+.hero-case::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(0,255,136,0.1) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
 }
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-.drop-rarity { margin: 0; font-size: 24px; letter-spacing: 1px; }
-#drop-name { font-size: 18px; margin: 10px 0 5px; font-weight: 500; }
-.drop-price { color: #888; margin: 0 0 20px; font-size: 14px; }
-
-@keyframes popIn {
-    from { opacity: 0; transform: scale(0.7) translateY(20px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
+.case-img-lg {
+    width: 180px;
+    filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+    position: relative; z-index: 1;
+    transition: transform 0.3s;
 }
+.case-img-lg:active { transform: scale(0.95); }
 
-/* Кнопка плюсика */
-.btn-add {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    width: 24px;
-    height: 24px;
-    margin-left: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* --- РУЛЕТКА --- */
+.roulette-container {
+    height: 140px;
+    background: #000;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    display: none; /* Скрыто пока не крутим */
+    border: 2px solid #333;
+    margin-bottom: 20px;
 }
-.btn-add:active { transform: scale(0.9); }
-
-/* Кнопка рюкзака */
-.btn-icon {
-    background: none;
-    border: 1px solid #444;
-    border-radius: 8px;
-    font-size: 20px;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin-left: 10px;
-    transition: 0.2s;
+.roulette-track {
+    display: flex; height: 100%; align-items: center;
+    will-change: transform;
 }
-.btn-icon:active { transform: scale(0.9); background: #333; }
-
-/* Окно Инвентаря */
-.inventory-content {
-    max-width: 400px;
-    width: 95%;
-    height: 80vh; /* Высота 80% от экрана */
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
+.center-line {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
+    background: var(--accent); z-index: 10; transform: translateX(-50%);
+    box-shadow: 0 0 10px var(--accent);
 }
-
-.inventory-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+.card-item {
+    min-width: 110px; height: 100px; margin: 0 4px;
+    background: #151921; border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-bottom: 3px solid transparent;
 }
-.btn-close { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+.card-item img { width: 80px; }
 
-/* Сетка предметов */
-.inventory-grid {
-    flex: 1; /* Занимает всё свободное место */
-    overflow-y: auto; /* Прокрутка, если много скинов */
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 предмета в ряд */
-    gap: 8px;
-    align-content: start;
-}
-
-/* Карточка предмета в инвентаре */
-.inv-item {
-    background: #1e1e1e;
-    border-radius: 8px;
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #333;
-    font-size: 10px;
-}
-.inv-item img { width: 100%; height: auto; }
-.inv-price { color: var(--accent); font-weight: bold; display: block; margin-top: 2px;}
-
-.inv-common { border-bottom: 2px solid var(--common); }
-.inv-rare { border-bottom: 2px solid var(--rare); }
-.inv-epic { border-bottom: 2px solid var(--epic); }
-.inv-legendary { border-bottom: 2px solid var(--legendary); }
-
-/* Кнопка продажи */
-.btn-sell {
-    background: #333;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 4px 8px;
-    margin-top: 5px;
-    font-size: 10px;
-    cursor: pointer;
+/* --- КНОПКИ --- */
+.btn-main {
     width: 100%;
+    padding: 18px;
+    background: var(--accent);
+    color: #0f1216;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 5px 20px var(--accent-glow);
+    transition: transform 0.1s;
+    position: relative; z-index: 2;
+}
+.btn-main:active { transform: scale(0.98); }
+
+/* --- НИЖНЕЕ МЕНЮ (Bottom Nav) --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; width: 100%;
+    height: 70px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px); /* Эффект стекла */
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+}
+.nav-item {
+    color: var(--text-sec);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+    gap: 4px;
+    background: none; border: none;
+    cursor: pointer;
     transition: 0.2s;
 }
-.btn-sell:hover { background: #d4af37; color: #000; border-color: #d4af37; }
-.btn-sell:disabled { opacity: 0.5; cursor: not-allowed; }
+.nav-item.active { color: var(--accent); transform: translateY(-2px); }
+.nav-icon { font-size: 24px; }
+
+/* --- ИНВЕНТАРЬ (Вкладка) --- */
+.tab-content { display: none; animation: fadeIn 0.3s; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.inv-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+}
+.inv-card img { width: 100%; }
+.inv-price { font-size: 12px; color: var(--accent); font-weight: bold; }
+.btn-sell-sm {
+    background: rgba(255,255,255,0.1);
+    border: none; color: #fff;
+    width: 100%; padding: 5px; margin-top: 5px;
+    border-radius: 6px; font-size: 10px;
+}
+
+/* Цвета редкости */
+.r-common { border-bottom-color: #b0c3d9; }
+.r-rare { border-bottom-color: #4b69ff; }
+.r-epic { border-bottom-color: #8847ff; }
+.r-legendary { border-bottom-color: #eb4b4b; }
+
+/* МОДАЛКА ВЫИГРЫША */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: none; align-items: center; justify-content: center; z-index: 200;
+}
+.modal-box {
+    background: var(--card-bg);
+    width: 80%; padding: 30px; border-radius: 24px;
+    text-align: center;
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 50px var(--accent-glow);
+}

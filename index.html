@@ -6,73 +6,79 @@
     <title>Hunter CS2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="style.css">
-</head>
+    </head>
 <body>
 
-    <header class="user-panel">
-        <div class="user-info">
-            <img id="user-avatar" src="assets/ui/default_avatar.png" alt="Avatar">
-            <div class="stats">
-                <h3 id="username">Loading...</h3>
-                <div class="level-bar">
-                    <div id="xp-fill" style="width: 0%"></div>
-                    <span id="level-text">Lvl 1</span>
+    <div id="app">
+        <header class="header">
+            <div class="user-badge">
+                <img id="user-avatar" src="assets/ui/default_avatar.png" class="avatar">
+                <div class="user-details">
+                    <h3 id="username">Loading...</h3>
+                    <span class="level-tag" id="level-text">Lvl 1</span>
                 </div>
             </div>
-			<div class="stats">
+            <div class="balance-card">
+                <img src="assets/ui/coin.png" width="16">
+                <span id="balance">0</span>
+                <button id="btn-add-funds" class="btn-plus">+</button>
             </div>
-            <button id="btn-inventory" class="btn-icon">🎒</button>
-        </div>
-       <div class="balance-box">
-            <img src="assets/ui/coin.png" class="icon-sm">
-            <span id="balance">0</span>
-            <button id="btn-add-funds" class="btn-add">+</button>
-        </div>
-    </header>
+        </header>
 
-    <main>
-        <div class="case-display">
-            <img src="assets/cases/default.png" class="case-img" id="current-case-img">
-            <h2>Daily Case</h2>
-        </div>
-
-        <div class="roulette-wrapper" id="roulette-wrapper" style="display: none;">
-            <div class="center-marker"></div>
-            <div class="roulette-track" id="roulette-track">
+        <div id="tab-home" class="tab-content active">
+            <div class="hero-case">
+                <img src="assets/cases/default.png" class="case-img-lg" id="case-img-main">
+                <h2 style="margin: 10px 0 0;">Daily Case</h2>
+                <p style="color: var(--text-sec); font-size: 12px;">Win rate: Rare items 30%</p>
             </div>
-        </div>
 
-        <div class="controls">
-            <button id="btn-open" class="btn-primary">
-                ОТКРЫТЬ ЗА 500 <img src="assets/ui/coin.png" class="icon-xs">
+            <div class="roulette-container" id="roulette-wrapper">
+                <div class="center-line"></div>
+                <div class="roulette-track" id="roulette-track"></div>
+            </div>
+
+            <button id="btn-open" class="btn-main">
+                ОТКРЫТЬ ЗА 500 💰
             </button>
         </div>
-    </main>
 
-    <div id="modal-drop" class="modal">
-        <div class="modal-content">
-            <h2 class="drop-rarity" id="drop-rarity-title">DROPPED!</h2>
-            <img id="drop-img" src="" alt="Skin">
-            <p id="drop-name">Item Name</p>
-            <p class="drop-price">Цена: <span id="drop-price">0</span></p>
-            <button class="btn-secondary" onclick="closeModal()">ЗАБРАТЬ</button>
+        <div id="tab-inventory" class="tab-content">
+            <h2 style="margin-top:0">Мои Скины</h2>
+            <div class="inventory-grid" id="inventory-grid">
+                </div>
+        </div>
+
+        <div id="tab-profile" class="tab-content">
+            <h2>Профиль</h2>
+            <div class="hero-case">
+                <p>Тут будет рефералка и задания</p>
+            </div>
         </div>
     </div>
 
-<div id="modal-inventory" class="modal">
-    <div class="modal-content inventory-content">
-        <div class="inventory-header">
-            <h2>INVENTORY</h2>
-            <button class="btn-close" onclick="closeInventory()">✖</button>
-        </div>
-        <div id="inventory-grid" class="inventory-grid">
-            <p style="color: #666;">Loading...</p>
-        </div>
-        <div class="inventory-footer">
-            <span id="total-value">Total Value: 0 💰</span>
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home', this)">
+            <span class="nav-icon">🎮</span>
+            <span>Игра</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('inventory', this)">
+            <span class="nav-icon">🎒</span>
+            <span>Инвентарь</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('profile', this)">
+            <span class="nav-icon">👤</span>
+            <span>Профиль</span>
+        </button>
+    </nav>
+
+    <div id="modal-drop" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="color:var(--accent)" id="drop-title">DROPPED!</h2>
+            <img id="drop-img" src="" style="width:80%; margin:20px 0;">
+            <p id="drop-name" style="font-weight:bold; font-size:18px;">Skin Name</p>
+            <button class="btn-main" onclick="closeModal()">ЗАБРАТЬ</button>
         </div>
     </div>
-</div>
 
     <script src="script.js"></script>
 </body>
