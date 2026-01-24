@@ -227,18 +227,51 @@ function renderInventory(items) {
         
         const el = document.createElement('div');
         el.className = `inv-item inv-${item.rarity}`;
-        // Сокращаем длинные названия (AK-47 | Redline -> AK-47...)
         const shortName = item.name.split('|')[0].trim();
         
+        // Добавляем кнопку SELL
+        // Мы используем onclick="sellItem(...)" и передаем туда ID
         el.innerHTML = `
             <img src="assets/${item.img}">
             <div>${shortName}</div>
-            <span class="inv-price">${item.price}</span>
+            <span class="inv-price">${item.price} 💰</span>
+            <button class="btn-sell" onclick="sellItem(${item.id}, this)">SELL</button>
         `;
         invGrid.appendChild(el);
     });
     
     document.getElementById('total-value').innerText = `Стоимость: ${totalVal} 💰`;
+}
+
+async function sellItem(itemId, btnElement) {
+    // Чтобы нельзя было нажать дважды
+    btnElement.disabled = true;
+    btnElement.innerText = '...';
+
+    try {
+        let response = await fetch(`${API_URL}/sell_item`, {
+            method: 'POST',
+            body: JSON.stringify({ user_id: userId, item_id: itemId })
+        });
+        let data = await response.json();
+
+        if (data.status === 'success') {
+            // Обновляем баланс в шапке
+            updateUI(data.new_balance, null, document.getElementById('level-text').innerText.replace('Lvl ',''));
+            
+            // Удаляем карточку визуально (чтобы не перезагружать весь инвентарь)
+            btnElement.parentElement.remove();
+            
+            // Вибрация успеха
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        } else {
+            alert("Ошибка продажи");
+            btnElement.disabled = false;
+        }
+    } catch (e) {
+        console.error(e);
+        btnElement.innerText = 'Error';
+    }
 }
 
 function closeInventory() {

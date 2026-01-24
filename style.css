@@ -297,3 +297,19 @@ body {
 .inv-rare { border-bottom: 2px solid var(--rare); }
 .inv-epic { border-bottom: 2px solid var(--epic); }
 .inv-legendary { border-bottom: 2px solid var(--legendary); }
+
+/* Кнопка продажи */
+.btn-sell {
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin-top: 5px;
+    font-size: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.2s;
+}
+.btn-sell:hover { background: #d4af37; color: #000; border-color: #d4af37; }
+.btn-sell:disabled { opacity: 0.5; cursor: not-allowed; }
