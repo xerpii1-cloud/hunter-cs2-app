@@ -190,5 +190,60 @@ btnAddFunds.addEventListener('click', async () => {
     }
 });
 
+// --- ИНВЕНТАРЬ ---
+const modalInv = document.getElementById('modal-inventory');
+const invGrid = document.getElementById('inventory-grid');
+
+// Открытие инвентаря
+document.getElementById('btn-inventory').addEventListener('click', async () => {
+    modalInv.style.display = 'flex';
+    invGrid.innerHTML = '<p style="color:#888;">Загрузка...</p>';
+    
+    try {
+        let response = await fetch(`${API_URL}/get_inventory`, {
+            method: 'POST',
+            body: JSON.stringify({ user_id: userId })
+        });
+        let data = await response.json();
+        
+        renderInventory(data.items);
+    } catch (e) {
+        invGrid.innerHTML = '<p style="color:red;">Ошибка загрузки</p>';
+    }
+});
+
+// Отрисовка сетки
+function renderInventory(items) {
+    invGrid.innerHTML = ''; // Очистить
+    let totalVal = 0;
+
+    if (items.length === 0) {
+        invGrid.innerHTML = '<p style="margin:auto; color:#666;">Инвентарь пуст</p>';
+        return;
+    }
+
+    items.forEach(item => {
+        totalVal += item.price;
+        
+        const el = document.createElement('div');
+        el.className = `inv-item inv-${item.rarity}`;
+        // Сокращаем длинные названия (AK-47 | Redline -> AK-47...)
+        const shortName = item.name.split('|')[0].trim();
+        
+        el.innerHTML = `
+            <img src="assets/${item.img}">
+            <div>${shortName}</div>
+            <span class="inv-price">${item.price}</span>
+        `;
+        invGrid.appendChild(el);
+    });
+    
+    document.getElementById('total-value').innerText = `Стоимость: ${totalVal} 💰`;
+}
+
+function closeInventory() {
+    modalInv.style.display = 'none';
+}
+
 // Старт
 loadUser();

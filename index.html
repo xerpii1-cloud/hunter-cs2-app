@@ -19,6 +19,9 @@
                     <span id="level-text">Lvl 1</span>
                 </div>
             </div>
+			<div class="stats">
+            </div>
+            <button id="btn-inventory" class="btn-icon">🎒</button>
         </div>
        <div class="balance-box">
             <img src="assets/ui/coin.png" class="icon-sm">
@@ -55,6 +58,21 @@
             <button class="btn-secondary" onclick="closeModal()">ЗАБРАТЬ</button>
         </div>
     </div>
+
+<div id="modal-inventory" class="modal">
+    <div class="modal-content inventory-content">
+        <div class="inventory-header">
+            <h2>INVENTORY</h2>
+            <button class="btn-close" onclick="closeInventory()">✖</button>
+        </div>
+        <div id="inventory-grid" class="inventory-grid">
+            <p style="color: #666;">Loading...</p>
+        </div>
+        <div class="inventory-footer">
+            <span id="total-value">Total Value: 0 💰</span>
+        </div>
+    </div>
+</div>
 
     <script src="script.js"></script>
 </body>
