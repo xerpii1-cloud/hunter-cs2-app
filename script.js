@@ -154,5 +154,41 @@ function closeModal() {
     caseImg.style.display = 'block';
 }
 
+// --- ПОКУПКА ЗВЕЗД ---
+const btnAddFunds = document.getElementById('btn-add-funds');
+
+btnAddFunds.addEventListener('click', async () => {
+    // 1. Спрашиваем юзера (пока просто через prompt, потом сделаем красиво)
+    // В реальном проекте тут лучше сделать красивое модальное окно выбора паков
+    if (!confirm("Купить 5000 монет за 50 Звезд ⭐?")) return;
+
+    try {
+        // 2. Просим бота создать счет
+        let response = await fetch(`${API_URL}/create_invoice`, {
+            method: 'POST',
+            body: JSON.stringify({ stars: 50 }) // Хотим купить за 50 звезд
+        });
+        
+        let data = await response.json();
+        
+        if (data.link) {
+            // 3. Открываем платежку Телеграм
+            tg.openInvoice(data.link, (status) => {
+                if (status === 'paid') {
+                    tg.close(); // Закрываем окно оплаты
+                    alert("Успешно! Монеты скоро придут.");
+                    // Небольшой хак: обновляем баланс через 2 секунды
+                    setTimeout(loadUser, 2000);
+                }
+            });
+        } else {
+            alert("Ошибка создания счета");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Ошибка сети");
+    }
+});
+
 // Старт
 loadUser();
