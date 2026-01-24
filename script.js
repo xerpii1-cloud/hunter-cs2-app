@@ -3,9 +3,9 @@ tg.expand();
 
 // --- НАСТРОЙКИ ---
 // Пока ставим true, чтобы проверить визуал без Python-сервера
-const USE_MOCK_API = true;
+const USE_MOCK_API = false;
 // Сюда потом вставим твой NGROK
-const API_URL = 'https://твоя-ссылка.ngrok-free.app/api';
+const API_URL = 'https://bayleigh-spherelike-sharie.ngrok-free.dev';
 
 const userId = tg.initDataUnsafe?.user?.id || 123456789;
 
