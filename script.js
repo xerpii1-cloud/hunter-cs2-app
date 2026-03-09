@@ -530,11 +530,17 @@ async function buyCoins() {
 // ============================================================
 
 // GET запрос к API
+// Заголовок ngrok-skip-browser-warning обязателен — без него ngrok
+// возвращает HTML-страницу с предупреждением вместо JSON
 async function apiGet(endpoint) {
     const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+        },
     });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return await response.json();
 }
 
@@ -542,9 +548,13 @@ async function apiGet(endpoint) {
 async function apiPost(endpoint, body) {
     const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+        },
         body: JSON.stringify(body),
     });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return await response.json();
 }
 
