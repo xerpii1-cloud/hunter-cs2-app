@@ -4,7 +4,7 @@
 
 // --- ВАЖНО: замени на URL своего Ngrok-туннеля ---
 // Пример: "https://abc123.ngrok-free.app"
-const API_BASE = "https://bayleigh-spherelike-sharie.ngrok-free.dev/";
+const API_BASE = "hweb-production-9b2cb.up.railway.app";
 
 // --- Ширина одной карточки рулетки + gap ---
 const CARD_WIDTH = 108; // 100px ширина + 8px gap
