@@ -61,17 +61,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadUser() {
     try {
-        const data = await apiGet(`/api/get_user?user_id=${STATE.user_id}&username=${encodeURIComponent(STATE.username)}`);
+        console.log("user_id:", STATE.user_id);
+        console.log("API_BASE:", API_BASE);
+        const url = `/api/get_user?user_id=${STATE.user_id}&username=${encodeURIComponent(STATE.username)}`;
+        console.log("Запрос на:", API_BASE + url);
+        const data = await apiGet(url);
+        console.log("Ответ:", data);
         if (data.ok) {
             updateStateFromResponse(data);
             renderHeader();
             updateRefLink();
         }
     } catch (err) {
-        console.error("Ошибка загрузки пользователя:", err);
+        console.error("Ошибка loadUser:", err);
         showToast("❌ Ошибка подключения к серверу");
     }
 }
+```
+
+После коммита открой Mini App на **компьютере через браузер** — зайди на:
+```
+https://xerpii1-cloud.github.io/hunter-cs2-app/
 
 // Обновляем локальный STATE из ответа сервера
 function updateStateFromResponse(data) {
