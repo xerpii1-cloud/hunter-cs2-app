@@ -4,7 +4,7 @@
 
 // --- ВАЖНО: замени на URL своего Ngrok-туннеля ---
 // Пример: "https://abc123.ngrok-free.app"
-const API_BASE = "https://ВАШ_NGROK_URL_СЮДА";
+const API_BASE = "https://bayleigh-spherelike-sharie.ngrok-free.dev/api";
 
 // --- Ширина одной карточки рулетки + gap ---
 const CARD_WIDTH = 108; // 100px ширина + 8px gap
@@ -76,8 +76,8 @@ async function loadUser() {
 // Обновляем локальный STATE из ответа сервера
 function updateStateFromResponse(data) {
     STATE.balance = data.balance ?? STATE.balance;
-    STATE.level   = data.level ?? STATE.level;
-    STATE.xp      = data.xp ?? STATE.xp;
+    STATE.level = data.level ?? STATE.level;
+    STATE.xp = data.xp ?? STATE.xp;
     if (data.trade_url !== undefined) {
         document.getElementById("tradeUrlInput").value = data.trade_url;
     }
@@ -90,15 +90,15 @@ function updateStateFromResponse(data) {
 function renderHeader() {
     // Аватар (первая буква имени)
     const letter = STATE.username.charAt(0).toUpperCase();
-    document.getElementById("headerAvatar").textContent  = letter;
+    document.getElementById("headerAvatar").textContent = letter;
     document.getElementById("profileAvatar").textContent = letter;
 
     // Имя
-    document.getElementById("headerName").textContent  = STATE.username;
+    document.getElementById("headerName").textContent = STATE.username;
     document.getElementById("profileName").textContent = STATE.username;
 
     // Уровень
-    document.getElementById("headerLevel").textContent  = `Ур. ${STATE.level}`;
+    document.getElementById("headerLevel").textContent = `Ур. ${STATE.level}`;
     document.getElementById("profileLevel").textContent = STATE.level;
 
     // Баланс
@@ -108,7 +108,7 @@ function renderHeader() {
     const XP_PER_LEVEL = 500;
     const xpInLevel = STATE.xp % XP_PER_LEVEL;
     const xpPercent = Math.round((xpInLevel / XP_PER_LEVEL) * 100);
-    document.getElementById("profileXP").textContent  = `${STATE.xp} XP`;
+    document.getElementById("profileXP").textContent = `${STATE.xp} XP`;
     document.getElementById("xpFill").style.width = `${xpPercent}%`;
 }
 
@@ -190,8 +190,8 @@ async function openCase() {
 
         // Обновляем состояние
         STATE.balance = data.new_balance;
-        STATE.level   = data.new_level;
-        STATE.xp      = data.new_xp;
+        STATE.level = data.new_level;
+        STATE.xp = data.new_xp;
         STATE.lastWonItem = data.skin;
 
         // Обновляем шапку
@@ -214,18 +214,18 @@ async function openCase() {
 // ============================================================
 
 async function runRoulette(rouletteItems, wonSkin) {
-    const overlay   = document.getElementById("modalOverlay");
-    const track     = document.getElementById("rouletteTrack");
+    const overlay = document.getElementById("modalOverlay");
+    const track = document.getElementById("rouletteTrack");
     const resultBox = document.getElementById("resultContainer");
-    const roulBox   = document.getElementById("rouletteContainer");
+    const roulBox = document.getElementById("rouletteContainer");
 
     // Показываем модалку и скрываем результат
     overlay.classList.add("visible");
     resultBox.style.display = "none";
-    roulBox.style.display   = "block";
-    track.style.transition  = "none";
-    track.style.transform   = "translateX(0)";
-    track.innerHTML         = "";
+    roulBox.style.display = "block";
+    track.style.transition = "none";
+    track.style.transform = "translateX(0)";
+    track.innerHTML = "";
 
     // Наполняем трек карточками
     rouletteItems.forEach((item, index) => {
@@ -238,18 +238,18 @@ async function runRoulette(rouletteItems, wonSkin) {
 
     // Вычисляем финальную позицию: выигрышная карточка должна быть под указателем
     const containerWidth = track.parentElement.offsetWidth;
-    const centerOffset   = Math.floor(containerWidth / 2) - Math.floor(CARD_WIDTH / 2);
-    const targetOffset   = WINNER_INDEX * CARD_WIDTH - centerOffset;
+    const centerOffset = Math.floor(containerWidth / 2) - Math.floor(CARD_WIDTH / 2);
+    const targetOffset = WINNER_INDEX * CARD_WIDTH - centerOffset;
 
     // Запускаем анимацию (3.5 секунды с плавным замедлением)
     track.style.transition = "transform 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-    track.style.transform  = `translateX(-${targetOffset}px)`;
+    track.style.transform = `translateX(-${targetOffset}px)`;
 
     // Ждём окончания анимации
     await sleep(3600);
 
     // Скрываем рулетку, показываем результат
-    roulBox.style.display   = "none";
+    roulBox.style.display = "none";
     resultBox.style.display = "block";
     showResult(wonSkin);
 }
@@ -268,10 +268,10 @@ function createRouletteCard(item, isWinner) {
 // Показываем результат в модалке
 function showResult(skin) {
     document.getElementById("resultSkinIcon").textContent = getRarityEmoji(skin.rarity);
-    document.getElementById("resultRarity").textContent   = getRarityLabel(skin.rarity);
-    document.getElementById("resultRarity").className     = `result-rarity ${skin.rarity}`;
-    document.getElementById("resultName").textContent     = skin.name;
-    document.getElementById("resultPrice").textContent    = `+${skin.price} 🪙`;
+    document.getElementById("resultRarity").textContent = getRarityLabel(skin.rarity);
+    document.getElementById("resultRarity").className = `result-rarity ${skin.rarity}`;
+    document.getElementById("resultName").textContent = skin.name;
+    document.getElementById("resultPrice").textContent = `+${skin.price} 🪙`;
     document.getElementById("sellResultPrice").textContent = skin.price;
 
     // Устанавливаем цвет свечения
@@ -328,7 +328,7 @@ function closeModal() {
 // ============================================================
 
 async function loadInventory() {
-    const grid  = document.getElementById("inventoryGrid");
+    const grid = document.getElementById("inventoryGrid");
     const empty = document.getElementById("inventoryEmpty");
     const total = document.getElementById("inventoryTotal");
 
@@ -376,7 +376,7 @@ function createSkinCard(item) {
     card.querySelector(".btn-sell").addEventListener("click", async (e) => {
         e.stopPropagation();
         const itemId = parseInt(e.target.dataset.id);
-        const price  = parseInt(e.target.dataset.price);
+        const price = parseInt(e.target.dataset.price);
         await sellInventoryItem(itemId, price, card);
     });
 
@@ -396,8 +396,8 @@ async function sellInventoryItem(itemId, price, cardEl) {
             renderHeader();
             // Анимация удаления карточки
             cardEl.style.transition = "opacity 0.3s, transform 0.3s";
-            cardEl.style.opacity    = "0";
-            cardEl.style.transform  = "scale(0.8)";
+            cardEl.style.opacity = "0";
+            cardEl.style.transform = "scale(0.8)";
             setTimeout(() => {
                 cardEl.remove();
                 loadInventory(); // Перезагружаем инвентарь
@@ -425,7 +425,7 @@ function updateRefLink() {
 // Копировать реферальную ссылку
 function copyRefLink() {
     const input = document.getElementById("refLinkInput");
-    const text  = input.value;
+    const text = input.value;
 
     // Пробуем через Clipboard API
     if (navigator.clipboard) {
@@ -561,9 +561,9 @@ async function apiPost(endpoint, body) {
 // Эмодзи по редкости скина
 function getRarityEmoji(rarity) {
     const map = {
-        common:    "🔫",
-        rare:      "💎",
-        epic:      "🌟",
+        common: "🔫",
+        rare: "💎",
+        epic: "🌟",
         legendary: "👑",
     };
     return map[rarity] || "🔫";
@@ -572,9 +572,9 @@ function getRarityEmoji(rarity) {
 // Название редкости на русском
 function getRarityLabel(rarity) {
     const map = {
-        common:    "Common",
-        rare:      "Rare",
-        epic:      "Epic",
+        common: "Common",
+        rare: "Rare",
+        epic: "Epic",
         legendary: "Legendary",
     };
     return map[rarity] || rarity;
