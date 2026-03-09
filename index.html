@@ -1,108 +1,226 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hunter CS2</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>CS2 Cases</title>
+
+    <!-- Telegram WebApp API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <div id="app">
-        <header class="header">
-            <div class="user-badge">
-                <img id="user-avatar" src="assets/ui/default_avatar.png" class="avatar">
-                <div class="user-details">
-                    <h3 id="username">Loading...</h3>
-                    <span class="level-tag" id="level-text">Lvl 1</span>
-                </div>
+    <!-- ===== ШАПКА (всегда видна) ===== -->
+    <header class="header">
+        <div class="header-user">
+            <div class="header-avatar" id="headerAvatar">?</div>
+            <div class="header-info">
+                <span class="header-name" id="headerName">Загрузка...</span>
+                <span class="header-level" id="headerLevel">Ур. 1</span>
             </div>
-            <div class="balance-card">
-                <img src="assets/ui/coin.png" width="16">
-                <span id="balance">0</span>
-                <button id="btn-add-funds" class="btn-plus">+</button>
-            </div>
-        </header>
+        </div>
+        <div class="header-balance">
+            <span class="balance-coins" id="headerBalance">0</span>
+            <span class="balance-icon">🪙</span>
+            <button class="btn-plus" id="btnBuyCoins" title="Купить монеты">+</button>
+        </div>
+    </header>
 
-        <div id="tab-home" class="tab-content active">
-            <div class="hero-case">
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ (вкладки) ===== -->
+    <main class="main-content">
+
+        <!-- === ВКЛАДКА: ИГРА === -->
+        <section class="tab-page active" id="tabGame">
+            <div class="case-wrapper">
                 <div class="case-glow"></div>
-                <img src="assets/cases/default.png" class="case-img-lg" id="case-img-main">
-                <h2 style="margin: 10px 0 0; position:relative; z-index:2;">Daily Case</h2>
-                <p style="color: var(--text-sec); font-size: 12px; position:relative; z-index:2;">Win rate: Rare items 30%</p>
-            </div>
-
-            <div class="roulette-container" id="roulette-wrapper">
-                <div class="center-line"></div>
-                <div class="roulette-track" id="roulette-track"></div>
-            </div>
-
-            <button id="btn-open" class="btn-main">
-                ОТКРЫТЬ ЗА 500 💰
-            </button>
-        </div>
-
-        <div id="tab-inventory" class="tab-content">
-            <div class="tab-header">
-                <h2>Мои Скины</h2>
-                <span id="inv-total-value" style="color: var(--text-sec); font-size: 12px;">Стоимость: 0 💰</span>
-            </div>
-            <div class="inventory-grid" id="inventory-grid">
-                </div>
-        </div>
-
-        <div id="tab-profile" class="tab-content">
-            <h2 style="margin-top:0">Профиль</h2>
-            
-            <div class="hero-case" style="text-align: left; padding: 20px; margin-bottom: 20px;">
-                <h3 style="margin:0; color:var(--accent)">Пригласи друга</h3>
-                <p style="font-size:12px; color:#888; margin: 5px 0 15px;">Получи 1000 монет за каждого!</p>
-                
-                <div class="ref-box">
-                    <input type="text" id="ref-link" value="Loading..." readonly>
-                    <button class="btn-copy" onclick="copyRef()">COPY</button>
-                </div>
-            </div>
-
-            <h3 style="margin-bottom: 10px;">Задания</h3>
-            <div class="task-list">
-                <div class="task-card">
-                    <div class="task-icon">📢</div>
-                    <div class="task-info">
-                        <div class="task-title">Подпишись на канал</div>
-                        <div class="task-reward">+500 💰</div>
+                <div class="case-image-container">
+                    <!-- Изображение кейса (можно заменить на свою картинку) -->
+                    <div class="case-box" id="caseBox">
+                        <div class="case-logo">CS2</div>
+                        <div class="case-label">PRIME CASE</div>
                     </div>
-                    <a href="#" id="btn-sub-link" target="_blank" class="btn-task-action">GO</a>
-                    <button class="btn-task-check" onclick="checkSub(this)">CHECK</button>
+                </div>
+
+                <div class="case-info">
+                    <h2 class="case-title">Prime Case</h2>
+                    <p class="case-subtitle">Открой и получи редкий скин!</p>
+                </div>
+
+                <!-- Вероятности выпадения -->
+                <div class="chances-grid">
+                    <div class="chance-item common">
+                        <span class="chance-label">Common</span>
+                        <span class="chance-value">60%</span>
+                    </div>
+                    <div class="chance-item rare">
+                        <span class="chance-label">Rare</span>
+                        <span class="chance-value">30%</span>
+                    </div>
+                    <div class="chance-item epic">
+                        <span class="chance-label">Epic</span>
+                        <span class="chance-value">9%</span>
+                    </div>
+                    <div class="chance-item legendary">
+                        <span class="chance-label">Legendary</span>
+                        <span class="chance-value">1%</span>
+                    </div>
+                </div>
+
+                <!-- Кнопка открытия -->
+                <button class="btn-open" id="btnOpenCase">
+                    <span class="btn-open-icon">🎰</span>
+                    <span>ОТКРЫТЬ ЗА 500 🪙</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- === ВКЛАДКА: ИНВЕНТАРЬ === -->
+        <section class="tab-page" id="tabInventory">
+            <div class="inventory-header">
+                <h2 class="page-title">🎒 Инвентарь</h2>
+                <div class="inventory-total">
+                    Итого: <span id="inventoryTotal">0</span> 🪙
                 </div>
             </div>
-        </div>
-    </div>
 
+            <div class="inventory-grid" id="inventoryGrid">
+                <!-- Карточки предметов вставляются через JS -->
+                <div class="inventory-empty" id="inventoryEmpty">
+                    <div class="empty-icon">📦</div>
+                    <p>Инвентарь пуст.<br>Открой кейс, чтобы получить скин!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- === ВКЛАДКА: ПРОФИЛЬ === -->
+        <section class="tab-page" id="tabProfile">
+            <div class="profile-container">
+
+                <!-- Карточка профиля -->
+                <div class="profile-card glass-card">
+                    <div class="profile-avatar" id="profileAvatar">?</div>
+                    <div class="profile-name" id="profileName">Загрузка...</div>
+
+                    <!-- Уровень и XP -->
+                    <div class="xp-container">
+                        <div class="xp-label">
+                            <span>Уровень <b id="profileLevel">1</b></span>
+                            <span id="profileXP">0 XP</span>
+                        </div>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trade URL -->
+                <div class="section-card glass-card">
+                    <h3 class="section-title">🔗 Steam Trade URL</h3>
+                    <input
+                        type="text"
+                        class="input-field"
+                        id="tradeUrlInput"
+                        placeholder="https://steamcommunity.com/tradeoffer/..."
+                    />
+                    <button class="btn-secondary" id="btnSaveTradeUrl">Сохранить</button>
+                </div>
+
+                <!-- Реферальная система -->
+                <div class="section-card glass-card">
+                    <h3 class="section-title">👥 Реферальная ссылка</h3>
+                    <p class="section-desc">Приглашай друзей и получай <b>200 монет</b> за каждого!</p>
+                    <div class="ref-link-container">
+                        <input
+                            type="text"
+                            class="input-field"
+                            id="refLinkInput"
+                            readonly
+                            placeholder="Загрузка..."
+                        />
+                        <button class="btn-copy" id="btnCopyRef">COPY</button>
+                    </div>
+                </div>
+
+                <!-- Задания -->
+                <div class="section-card glass-card">
+                    <h3 class="section-title">📋 Задания</h3>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <span class="task-icon">📢</span>
+                            <div>
+                                <div class="task-name">Подпишись на канал</div>
+                                <div class="task-reward">+100 монет</div>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-task" id="btnGoChannel">Перейти</button>
+                            <button class="btn-task btn-check" id="btnCheckSub">CHECK</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== НИЖНЕЕ МЕНЮ (навигация) ===== -->
     <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('home', this)">
+        <button class="nav-btn active" data-tab="tabGame">
             <span class="nav-icon">🎮</span>
-            <span>Игра</span>
+            <span class="nav-label">Игра</span>
         </button>
-        <button class="nav-item" onclick="switchTab('inventory', this)">
+        <button class="nav-btn" data-tab="tabInventory">
             <span class="nav-icon">🎒</span>
-            <span>Инвентарь</span>
+            <span class="nav-label">Инвентарь</span>
         </button>
-        <button class="nav-item" onclick="switchTab('profile', this)">
+        <button class="nav-btn" data-tab="tabProfile">
             <span class="nav-icon">👤</span>
-            <span>Профиль</span>
+            <span class="nav-label">Профиль</span>
         </button>
     </nav>
 
-    <div id="modal-drop" class="modal-overlay">
+    <!-- ===== МОДАЛЬНОЕ ОКНО: Рулетка + Результат ===== -->
+    <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
-            <h2 style="color:var(--accent)" id="drop-title">DROPPED!</h2>
-            <img id="drop-img" src="">
-            <p id="drop-name">Skin Name</p>
-            <button class="btn-main" onclick="closeModal()">ЗАБРАТЬ</button>
+
+            <!-- Рулетка -->
+            <div class="roulette-container" id="rouletteContainer">
+                <div class="roulette-pointer"></div>
+                <div class="roulette-track-wrapper">
+                    <div class="roulette-track" id="rouletteTrack">
+                        <!-- Карточки вставляются через JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Результат (скрыт до окончания анимации) -->
+            <div class="result-container" id="resultContainer" style="display:none;">
+                <div class="result-glow" id="resultGlow"></div>
+                <div class="result-image-wrap">
+                    <div class="result-skin-icon" id="resultSkinIcon">🔫</div>
+                </div>
+                <div class="result-rarity" id="resultRarity">Common</div>
+                <div class="result-name" id="resultName">AK-47 | Vulcan</div>
+                <div class="result-price" id="resultPrice">+150 🪙</div>
+
+                <div class="result-buttons">
+                    <button class="btn-sell-result" id="btnSellResult">
+                        Продать за <span id="sellResultPrice">150</span> 🪙
+                    </button>
+                    <button class="btn-keep-result" id="btnKeepResult">
+                        Забрать в инвентарь
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
+
+    <!-- ===== ТОСТ-УВЕДОМЛЕНИЕ ===== -->
+    <div class="toast" id="toast"></div>
 
     <script src="script.js"></script>
 </body>
