@@ -1,164 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    background-color: #1a1a2e;
+    background-color: #0d131c; /* Темный фон как на референсе */
     color: #ffffff;
-    font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
 }
 
 .app {
     max-width: 480px;
     margin: 0 auto;
-    padding: 16px;
+    padding-bottom: 80px; /* Отступ для нижнего меню */
 }
 
 /* Шапка */
 .header {
+    text-align: center;
+    padding: 20px 16px;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 24px;
+    color: #4ade80; /* Неоновый зеленый */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+/* Баланс */
+.balance-container {
+    text-align: center;
+    padding: 20px 16px;
+}
+
+.balance-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 42px;
+    font-weight: 800;
+}
+
+.currency-icon {
+    color: #4ade80;
+}
+
+.balance-label {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 16px;
+}
+
+.buy-btn {
+    background: #15803d;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(21, 128, 61, 0.3);
+}
+
+/* Задания */
+.tasks-section {
+    padding: 16px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.task-card {
+    background: #141e2a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #16213e, #0f3460);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
-    border: 1px solid #e94560;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.avatar {
-    font-size: 32px;
-}
-
-.user-name {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.balance-block {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(233, 69, 96, 0.2);
-    padding: 8px 14px;
-    border-radius: 20px;
-    border: 1px solid #e94560;
-}
-
-.balance-icon {
-    font-size: 20px;
-}
-
-.balance-amount {
-    font-size: 20px;
-    font-weight: bold;
-    color: #ffd700;
-}
-
-/* Вкладки */
-.tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.tab {
-    flex: 1;
-    text-align: center;
-    padding: 10px;
-    border-radius: 10px;
-    background: #16213e;
-    cursor: pointer;
-    font-size: 13px;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-}
-
-    .tab.active {
-        background: #e94560;
-        border-color: #e94560;
-        font-weight: bold;
-    }
-
-    .tab.disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-
-/* Заголовок секции */
-.section-title {
-    color: #aaaaaa;
-    font-size: 13px;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-/* Карточки заданий */
-.task-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #16213e;
-    border-radius: 14px;
-    padding: 16px;
-    margin-bottom: 10px;
-    border: 1px solid #0f3460;
-    transition: all 0.2s;
-}
-
-    .task-card.done {
-        opacity: 0.5;
-        border-color: #2ecc71;
-    }
-
-.task-icon {
-    font-size: 28px;
-    min-width: 40px;
-    text-align: center;
-}
-
-.task-info {
-    flex: 1;
 }
 
 .task-name {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     margin-bottom: 4px;
 }
 
-.task-reward {
-    font-size: 13px;
-    color: #ffd700;
+.task-progress, .task-reward {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.plus {
+    color: #4ade80;
+    font-weight: bold;
 }
 
 .task-btn {
-    background: linear-gradient(135deg, #e94560, #c0392b);
-    color: white;
-    border: none;
-    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid #4ade80;
+    color: #4ade80;
+    padding: 8px 16px;
     border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
+    font-size: 12px;
+    font-weight: 600;
 }
 
-    .task-btn:hover {
-        transform: scale(1.05);
-    }
+.timer {
+    background: #0f172a;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #64748b;
+}
 
-    .task-btn:disabled {
-        background: #444;
-        cursor: not-allowed;
-        transform: none;
-    }
+/* Нижнее меню */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #0d131c;
+    border-top: 1px solid #1e293b;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    padding-bottom: env(safe-area-inset-bottom, 10px); /* Для iPhone */
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #64748b;
+    font-size: 11px;
+    gap: 4px;
+}
+
+.nav-item.active {
+    color: #4ade80;
+}
+
+.nav-icon {
+    font-size: 20px;
+}
