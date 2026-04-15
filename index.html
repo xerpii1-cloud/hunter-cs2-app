@@ -1,72 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS2 Case Opener</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hunter CS2</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
     <div class="app">
+        <header class="header">
+            <h1 class="logo">HUNTER CS2</h1>
+            <p class="subtitle">Открывай лучшие кейсы с нами!</p>
+        </header>
 
-        <!-- Шапка с балансом -->
-        <div class="header">
-            <div class="user-info">
-                <div class="avatar">🎮</div>
-                <div class="user-name" id="userName">Player</div>
-            </div>
-            <div class="balance-block">
-                <span class="balance-icon">🪙</span>
-                <span class="balance-amount" id="balanceAmount">0</span>
-            </div>
-        </div>
-
-        <!-- Вкладки -->
-        <div class="tabs">
-            <div class="tab active" data-tab="earn">📋 Tasks</div>
-            <div class="tab disabled" data-tab="cases">🎁 Cases</div>
-            <div class="tab disabled" data-tab="shop">🛒 Shop</div>
-        </div>
-
-        <!-- Контент вкладки Tasks -->
-        <div class="tab-content" id="earnTab">
-
-            <div class="section-title">Complete tasks to earn coins</div>
-
-            <!-- Задание 1: Подписка на канал -->
-            <div class="task-card" id="task-subscribe">
-                <div class="task-icon">📢</div>
-                <div class="task-info">
-                    <div class="task-name">Subscribe to channel</div>
-                    <div class="task-reward">+500 🪙</div>
+        <main class="main-content" id="earnTab">
+            
+            <div class="balance-container">
+                <div class="balance-display">
+                    <span class="currency-icon">💎</span>
+                    <span class="balance-amount" id="balanceAmount">0</span>
                 </div>
-                <button class="task-btn" onclick="doSubscribe()">Go</button>
+                <div class="balance-label">ваш баланс</div>
+                <button class="buy-btn">Купить алмазы</button>
             </div>
 
-            <!-- Задание 2: Ежедневный бонус -->
-            <div class="task-card" id="task-daily">
-                <div class="task-icon">📅</div>
-                <div class="task-info">
-                    <div class="task-name">Daily bonus</div>
-                    <div class="task-reward">+100 🪙</div>
+            <div class="tasks-section">
+                <h2 class="section-title">Активные задания</h2>
+
+                <div class="task-card" id="task-daily">
+                    <div class="task-info">
+                        <div class="task-name">Ежедневные награды</div>
+                        <div class="task-progress">💎 💎 💎 🤍 🤍</div>
+                    </div>
+                    <div class="task-action">
+                        <div class="timer">23:37:48</div>
+                    </div>
                 </div>
-                <button class="task-btn" onclick="doDaily()">Claim</button>
-            </div>
 
-            <!-- Задание 3: Реакция -->
-            <div class="task-card" id="task-reaction">
-                <div class="task-icon">👍</div>
-                <div class="task-info">
-                    <div class="task-name">Leave a reaction</div>
-                    <div class="task-reward">+50 🪙</div>
+                <div class="task-card" id="task-subscribe">
+                    <div class="task-info">
+                        <div class="task-name">Подписаться на канал</div>
+                        <div class="task-reward"><span class="plus">+500</span> 💎 за подписку</div>
+                    </div>
+                    <div class="task-action">
+                        <button class="task-btn" onclick="doSubscribe()">Проверить</button>
+                    </div>
                 </div>
-                <button class="task-btn" onclick="doReaction()">React</button>
             </div>
+        </main>
 
-        </div>
-
+        <nav class="bottom-nav">
+            <div class="nav-item active" data-tab="earn">
+                <div class="nav-icon">💎</div>
+                <div class="nav-text" id="navBalance">0</div>
+            </div>
+            <div class="nav-item" data-tab="cases">
+                <div class="nav-icon">🕹️</div>
+                <div class="nav-text">Игры</div>
+            </div>
+            <div class="nav-item" data-tab="inventory">
+                <div class="nav-icon">🎒</div>
+                <div class="nav-text">Инвентарь</div>
+            </div>
+            <div class="nav-item" data-tab="profile">
+                <div class="nav-icon">👤</div>
+                <div class="nav-text">Профиль</div>
+            </div>
+        </nav>
     </div>
 
     <script src="script.js"></script>
